@@ -1,48 +1,49 @@
-// src/components/events/EventDetailsModal.jsx
-import React, { useState } from 'react';
-import FeedbackForm from '../feedback/FeedbackForm';
-import FeedbackList from '../feedback/FeedbackList';
+import React, { useEffect, useState } from 'react';
+import Modal from '../common/Modal';
+import API from '../../services/api';
 
-const EventDetailsModal = ({ event, isOpen, onClose }) => {
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+const EventDetailsModal = ({ eventId, isOpen, onClose }) => {
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isOpen && eventId) {
+      fetchEventDetails();
+    }
+  }, [isOpen, eventId]);
+
+  const fetchEventDetails = async () => {
+    try {
+      setLoading(true);
+      const response = await API.get(`/events/${eventId}`);
+      setEvent(response.data);
+    } catch (error) {
+      console.error('Error fetching event details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg p-6 w-11/12 max-w-3xl max-h-[90vh] overflow-y-auto relative shadow-lg">
-        <button
-          className="absolute top-3 right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold"
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          &times;
-        </button>
-
-        {/* Event Details */}
-        <h2 className="text-3xl font-bold mb-4">{event.title}</h2>
-        <p className="mb-2">{event.description}</p>
-        <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-        <p><strong>Time:</strong> {event.time}</p>
-        <p><strong>Location:</strong> {event.location}</p>
-        <p><strong>Organizer:</strong> {event.organizerName || 'N/A'}</p>
-
-        {/* Feedback Section */}
-        <div className="mt-8 border-t pt-6">
-          <h3 className="text-2xl font-semibold mb-4">Volunteer Feedback</h3>
-
-          <FeedbackForm
-            eventId={event._id}
-            onFeedbackSubmitted={() => setFeedbackSubmitted(!feedbackSubmitted)}
-          />
-
-          <FeedbackList
-            eventId={event._id}
-            key={feedbackSubmitted}
-          />
+    <Modal isOpen={isOpen} onClose={onClose} title="Event Details">
+      {loading ? (
+        <p className="text-center">Loading event details...</p>
+      ) : event ? (
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold">{event.title}</h2>
+          <p><strong>Description:</strong> {event.description}</p>
+          <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+          <p><strong>Location:</strong> {event.location}</p>
+          <p><strong>Organizer:</strong> {event.organizerName || 'N/A'}</p>
+          <p><strong>Spots:</strong> {event.volunteersRegistered?.length || 0} / {event.maxVolunteers}</p>
+          {/* Additional fields */}
         </div>
-      </div>
-    </div>
+      ) : (
+        <p className="text-center text-red-500">Failed to load event details.</p>
+      )}
+    </Modal>
   );
 };
 

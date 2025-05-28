@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="bg-white shadow-md">
       <div className="container mx-auto flex items-center justify-between p-4">
         <Link to="/" className="text-2xl font-bold text-blue-600">
-          VolunteerNet
+          VolunteerNetwork
         </Link>
 
         <div className="space-x-6">
