@@ -1,9 +1,35 @@
 const express = require('express');
-const { matchVolunteersToEvents } = require('../controllers/volunteerMatchController');
+const { getMatchesForVolunteer, getMatchesForEvent } = require('../controllers/volunteerMatchController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authMiddleware, matchVolunteersToEvents);
+/**
+ * @swagger
+ * /api/match:
+ *   get:
+ *     summary: Get recommended matches for the logged-in volunteer
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of matched events or opportunities
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   eventId:
+ *                     type: string
+ *                   eventName:
+ *                     type: string
+ *                   matchScore:
+ *                     type: number
+ *       401:
+ *         description: Unauthorized (no token or invalid token)
+ */
+router.get('/', authMiddleware, getMatchesForVolunteer);
 
 module.exports = router;

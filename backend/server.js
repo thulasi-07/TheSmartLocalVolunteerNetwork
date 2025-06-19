@@ -3,6 +3,10 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
 
+// ✅ Swagger setup
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
@@ -33,10 +37,33 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// ✅ Swagger definition and setup
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Smart Local Volunteer Network API',
+    version: '1.0.0',
+    description: 'API documentation for the Smart Local Volunteer Network',
+  },
+  servers: [
+    {
+      url: 'http://localhost:5000',
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ['./routes/*.js'], // auto-load from route files
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Public routes
 app.use('/api/auth', authRoutes);
 
-// Protected routes (example: require authMiddleware)
+// Protected routes (require authMiddleware)
 app.use('/api/events', authMiddleware, eventRoutes);
 app.use('/api/feedback', authMiddleware, feedbackRoutes);
 app.use('/api/certificates', authMiddleware, certificateRoutes);
@@ -50,4 +77,5 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`API Docs available at http://localhost:${PORT}/api-docs`);
 });
