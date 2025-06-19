@@ -1,52 +1,42 @@
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto flex items-center justify-between p-4">
-        <Link to="/" className="text-2xl font-bold text-blue-600">
-          VolunteerNetwork
-        </Link>
+    <nav className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 flex justify-between items-center shadow-md">
+      <div className="text-xl font-semibold tracking-wide">Volunteer Network</div>
+      <div className="flex gap-6 items-center relative">
+        <Link to="/" className="hover:underline">Home</Link>
+        {/* <Link to="/events" className="hover:underline">Events</Link> */}
+        <Link to="/login" className="hover:underline">Login</Link>
 
-        <div className="space-x-6">
-          <Link to="/" className="hover:text-blue-500">
-            Home
-          </Link>
-          <Link to="/events" className="hover:text-blue-500">
-            Events
-          </Link>
+        <div className="relative">
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="hover:underline focus:outline-none"
+          >
+            Register
+          </button>
 
-          {user ? (
-            <>
-              <Link to="/dashboard" className="hover:text-blue-500">
-                Dashboard
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="hover:text-red-500 focus:outline-none"
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-52 bg-white text-black rounded-lg shadow-lg z-20">
+              <Link
+                to="/register-organizer"
+                className="block px-4 py-2 hover:bg-gray-100"
+                onClick={() => setShowDropdown(false)}
               >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="hover:text-blue-500">
-                Login
+                Register as Organizer
               </Link>
-              <Link to="/register" className="hover:text-blue-500">
-                Register
+              <Link
+                to="/register-volunteer"
+                className="block px-4 py-2 hover:bg-gray-100"
+                onClick={() => setShowDropdown(false)}
+              >
+                Register as Volunteer
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>

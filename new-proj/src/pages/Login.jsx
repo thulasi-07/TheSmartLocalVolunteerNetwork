@@ -9,60 +9,79 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // If already logged in, redirect to home or dashboard
+  // If already logged in, redirect based on role
   if (user) {
-    return <Navigate to="/" replace />;
+    return user.role === 'organizer' ? (
+      <Navigate to="/organizer-dashboard" replace />
+    ) : (
+      <Navigate to="/volunteer-dashboard" replace />
+    );
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const success = await login(email, password);
+
     if (success) {
-      navigate('/'); // Redirect to home or dashboard after login
+      // ✅ Redirect based on role
+      if (success.role === 'organizer') {
+        navigate('/organizer-dashboard');
+      } else if (success.role === 'volunteer') {
+        navigate('/volunteer-dashboard');
+      } else {
+        navigate('/');
+      }
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="max-w-md w-full bg-white p-8 rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-cyan-100 px-4">
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl">
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+          Welcome Back 👋
+        </h2>
 
         {error && (
-          <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>
+          <div className="mb-4 text-sm text-red-700 bg-red-100 p-3 rounded text-center">
+            {error}
+          </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <label className="block mb-2 font-semibold" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="you@example.com"
-          />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
+            />
+          </div>
 
-          <label className="block mb-2 font-semibold" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded p-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Your password"
-          />
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
+            />
+          </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-300 disabled:opacity-50"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-lg transition duration-300 disabled:opacity-50"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
