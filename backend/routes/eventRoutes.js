@@ -76,3 +76,27 @@
 // module.exports = router;
 
 
+const express = require('express');
+const router = express.Router();
+
+const {
+  createEvent,
+  getAllEvents,
+  participateInEvent,
+  markNotInterested,
+  markEventCompleted,
+  getParticipantsByOrganizer,
+  getVolunteerActivities
+} = require('../controllers/eventController');
+
+// ✅ Routes
+router.post('/', createEvent);
+router.get('/', getAllEvents);
+router.post('/:eventId/participate', participateInEvent);
+router.post('/:eventId/not-interested', markNotInterested);
+router.post('/:eventId/complete', markEventCompleted);
+
+router.get('/organizer/:organizerId/participants', getParticipantsByOrganizer);
+router.get('/activities/:organizerId', getVolunteerActivities);
+
+module.exports = router;

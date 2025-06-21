@@ -68,11 +68,17 @@ exports.loginUser = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.status(200).json({
-      token,
-      role: user.role,
-      message: 'Login successful'
-    });
+   res.status(200).json({
+  token,
+  role: user.role,      // "organizer" or "volunteer"
+  user: {
+    _id: user._id,
+    name: user.name,
+    email: user.email
+    // any other info you want to send
+  }
+});
+
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
