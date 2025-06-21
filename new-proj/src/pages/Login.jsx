@@ -1,7 +1,5 @@
-// src/pages/Login.jsx
-
 import React, { useState } from 'react';
-import axios from '../services/api';
+import axios from '../services/authApi'; // your custom axios instance
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -19,13 +17,17 @@ const Login = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     setError('');
+
     try {
       const response = await axios.post('/login', formData);
-      const { token, role } = response.data;
+      const { token, role, user } = response.data;
 
-      // ✅ Store in localStorage instead of AuthContext
+      // ✅ Save data in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+
+ // important
 
       // ✅ Redirect based on role
       if (role === 'organizer') {

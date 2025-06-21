@@ -1,7 +1,7 @@
 // src/pages/RegisterVolunteer.jsx
 
 import React, { useState } from 'react';
-import axios from '../services/api';
+import axios from '../services/authApi';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterVolunteer = () => {

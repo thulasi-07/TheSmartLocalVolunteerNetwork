@@ -1,23 +1,24 @@
 // src/components/dashboard/OrganizerStats.jsx
 import React, { useEffect, useState } from 'react';
-import axios from '../../services/api';
+import { fetchEventsByOrganizer } from '../../services/eventApi'; // ✅ use event API
 
-const OrganizerStats = () => {
+const OrganizerStats = ({ organizerId }) => {
   const [eventCount, setEventCount] = useState(0);
 
   useEffect(() => {
-    const fetchOrganizerStats = async () => {
+    const fetchStats = async () => {
       try {
-        const organizerId = localStorage.getItem('userId');
-        const response = await axios.get(`/events?organizerId=${organizerId}`);
+        if (!organizerId) throw new Error("Organizer ID is missing");
+
+        const response = await fetchEventsByOrganizer(organizerId);
         setEventCount(response.data.length);
       } catch (err) {
         console.error('Error fetching organizer stats', err);
       }
     };
 
-    fetchOrganizerStats();
-  }, []);
+    fetchStats();
+  }, [organizerId]);
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-4 text-center">

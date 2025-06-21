@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from '../common/Modal';
-import API from '../../services/api';
+import API from '../../services/authApi';
 
 const EventDetailsModal = ({ eventId, isOpen, onClose }) => {
   const [event, setEvent] = useState(null);

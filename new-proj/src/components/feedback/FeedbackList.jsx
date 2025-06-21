@@ -45,7 +45,7 @@
 
 // src/components/feedback/FeedbackList.jsx
 import React, { useEffect, useState } from 'react';
-import axios from '../../services/api'; // your axios instance
+import axios from '../../services/authApi'; // your axios instance
 
 const FeedbackList = ({ eventId }) => {
   const [feedbacks, setFeedbacks] = useState([]);

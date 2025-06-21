@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import API from '../services/api';
+import API from '../services/authApi';
 import EventDetailsModal from '../components/events/EventDetailsModal';
 
 const EventList = () => {

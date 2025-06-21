@@ -65,7 +65,7 @@
 
 // src/components/feedback/FeedbackForm.jsx
 import React, { useState, useContext } from 'react';
-import axios from '../../services/api'; // your axios instance
+import axios from '../../services/authApi'; // your axios instance
 
 
 const FeedbackForm = ({ eventId, onFeedbackSubmitted }) => {
