@@ -1,20 +1,19 @@
-// import axios from 'axios';
-
-// const API = axios.create({
-//   baseURL: 'http://localhost:5000/api', // Your backend URL
-//   withCredentials: true,                 // Include cookies/session if any
-// });
-
-// export default API;
-
-
-// services/api.js
+// src/services/api.js
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  withCredentials: true,
+const API = axios.create({
+  baseURL: 'http://localhost:5000/api/auth', // ✅ Change if needed
 });
 
-export default api;
+// ✅ Add token from localStorage to every request (if exists)
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
+export default API;

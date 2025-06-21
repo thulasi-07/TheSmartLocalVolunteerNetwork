@@ -1,92 +1,99 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { useNavigate, Navigate } from 'react-router-dom';
+// src/pages/Login.jsx
+
+import React, { useState } from 'react';
+import axios from '../services/api';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const { user, login, loading, error } = useContext(AuthContext);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const handleChange = e => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  // If already logged in, redirect based on role
-  if (user) {
-    return user.role === 'organizer' ? (
-      <Navigate to="/organizer-dashboard" replace />
-    ) : (
-      <Navigate to="/volunteer-dashboard" replace />
-    );
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    const success = await login(email, password);
+    setError('');
+    try {
+      const response = await axios.post('/login', formData);
+      const { token, role } = response.data;
 
-    if (success) {
+      // ✅ Store in localStorage instead of AuthContext
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+
       // ✅ Redirect based on role
-      if (success.role === 'organizer') {
+      if (role === 'organizer') {
         navigate('/organizer-dashboard');
-      } else if (success.role === 'volunteer') {
+      } else if (role === 'volunteer') {
         navigate('/volunteer-dashboard');
       } else {
-        navigate('/');
+        setError('Unknown user role');
       }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-cyan-100 px-4">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl">
-        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
-          Welcome Back 👋
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md space-y-6"
+      >
+        <h2 className="text-3xl font-bold text-center text-blue-700">Login</h2>
 
-        {error && (
-          <div className="mb-4 text-sm text-red-700 bg-red-100 p-3 rounded text-center">
-            {error}
-          </div>
-        )}
+        {error && <p className="text-center text-red-600">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-lg transition duration-300 disabled:opacity-50"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition duration-300 font-semibold"
+        >
+          Login
+        </button>
+
+        <p className="text-sm text-center text-gray-500">
+          Not registered yet? Choose from{' '}
+          <a href="/register-organizer" className="text-blue-600 font-medium hover:underline">
+            Organizer
+          </a>{' '}
+          or{' '}
+          <a href="/register-volunteer" className="text-blue-600 font-medium hover:underline">
+            Volunteer
+          </a>
+        </p>
+      </form>
     </div>
   );
 };

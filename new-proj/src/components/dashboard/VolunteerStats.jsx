@@ -1,47 +1,31 @@
+// src/components/dashboard/VolunteerStats.jsx
 import React, { useEffect, useState } from 'react';
-import API from '../../services/api';
+import axios from '../../services/api';
 
 const VolunteerStats = () => {
-  const [stats, setStats] = useState({
-    totalEventsParticipated: 0,
-    badgesEarned: 0,
-    upcomingEvents: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [registeredEvents, setRegisteredEvents] = useState(0);
 
   useEffect(() => {
     const fetchVolunteerStats = async () => {
       try {
-        const response = await API.get('/volunteer/stats'); // Adjust API endpoint as per backend
-        setStats(response.data);
-        setLoading(false);
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get('/events');
+        const filtered = response.data.filter(event =>
+          event.volunteers.includes(userId)
+        );
+        setRegisteredEvents(filtered.length);
       } catch (err) {
-        setError('Failed to load volunteer stats.');
-        setLoading(false);
+        console.error('Error fetching volunteer stats', err);
       }
     };
 
     fetchVolunteerStats();
   }, []);
 
-  if (loading) return <div>Loading volunteer stats...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div className="bg-blue-100 rounded-lg p-4 text-center shadow">
-        <h3 className="text-xl font-semibold">Events Participated</h3>
-        <p className="text-3xl font-bold">{stats.totalEventsParticipated}</p>
-      </div>
-      <div className="bg-green-100 rounded-lg p-4 text-center shadow">
-        <h3 className="text-xl font-semibold">Badges Earned</h3>
-        <p className="text-3xl font-bold">{stats.badgesEarned}</p>
-      </div>
-      <div className="bg-yellow-100 rounded-lg p-4 text-center shadow">
-        <h3 className="text-xl font-semibold">Upcoming Events</h3>
-        <p className="text-3xl font-bold">{stats.upcomingEvents}</p>
-      </div>
+    <div className="bg-white shadow-md rounded-lg p-6 mb-4 text-center">
+      <h2 className="text-xl font-semibold text-green-700">Volunteer Stats</h2>
+      <p className="mt-2 text-gray-600">Events Participated: <strong>{registeredEvents}</strong></p>
     </div>
   );
 };

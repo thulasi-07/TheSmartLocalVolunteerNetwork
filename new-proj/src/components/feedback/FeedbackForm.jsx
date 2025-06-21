@@ -66,7 +66,7 @@
 // src/components/feedback/FeedbackForm.jsx
 import React, { useState, useContext } from 'react';
 import axios from '../../services/api'; // your axios instance
-import { AuthContext } from '../../context/AuthContext';
+
 
 const FeedbackForm = ({ eventId, onFeedbackSubmitted }) => {
   const [rating, setRating] = useState(5);
@@ -74,7 +74,6 @@ const FeedbackForm = ({ eventId, onFeedbackSubmitted }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { user } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
