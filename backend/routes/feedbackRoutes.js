@@ -68,3 +68,11 @@
 // module.exports = router;
 
 
+const express = require('express');
+const router = express.Router();
+const { submitFeedback, getFeedbacksByOrganizer } = require('../controllers/feedbackController');
+
+router.post('/submit', submitFeedback);
+router.get('/organizer/:organizerId', getFeedbacksByOrganizer);
+
+module.exports = router;

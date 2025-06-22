@@ -99,4 +99,5 @@ router.post('/:eventId/complete', markEventCompleted);
 router.get('/organizer/:organizerId/participants', getParticipantsByOrganizer);
 router.get('/activities/:organizerId', getVolunteerActivities);
 
+
 module.exports = router;

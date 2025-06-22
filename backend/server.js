@@ -90,6 +90,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+
 const errorHandler = require('./middleware/errorMiddleware');
 
 
