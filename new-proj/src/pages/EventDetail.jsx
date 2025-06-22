@@ -41,7 +41,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EventDetailsModal from '../components/events/EventDetailsModal';
-import FeedbackForm from '../components/feedback/FeedbackForm';
+import FeedbackForm from '../components/volunteer/FeedbackForm';
 import FeedbackList from '../components/feedback/FeedbackList';
 import API from '../services/authApi';
 

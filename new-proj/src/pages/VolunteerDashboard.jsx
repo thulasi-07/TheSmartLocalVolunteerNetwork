@@ -1,11 +1,19 @@
+// src/pages/VolunteerDashboard.jsx
 import React, { useEffect, useState } from 'react';
-import { fetchAllEvents } from '../services/eventApi';
+import VolunteerSidebar from '../components/volunteer/VolunteerSidebar';
+import VolunteerStats from '../components/volunteer/VolunteerStats';
 import EventCard from '../components/events/EventCard';
+import FeedbackForm from '../components/volunteer/FeedbackForm';
+import BadgeView from '../components/volunteer/BadgeView';
+import CertificateView from '../components/volunteer/CertificateView';
+import VolunteerProfile from '../pages/VolunteerProfile';
+import { fetchAllEvents } from '../services/eventApi';
 import { toast } from 'react-toastify';
 
 const VolunteerDashboard = () => {
-  const [events, setEvents] = useState([]);
+  const [activeTab, setActiveTab] = useState('events');
   const [user, setUser] = useState(null);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -25,13 +33,49 @@ const VolunteerDashboard = () => {
     loadEvents();
   }, []);
 
+  const renderTabContent = () => {
+    if (!user) return <p className="text-center text-gray-600">Loading user data...</p>;
+
+    switch (activeTab) {
+      case 'events':
+        return (
+          <>
+            <VolunteerStats volunteerId={user._id} />
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              {events.map((event) => (
+                <EventCard key={event._id} event={event} userId={user._id} />
+              ))}
+            </div>
+          </>
+        );
+      case 'feedback':
+        return <FeedbackForm volunteerId={user._id} />;
+      case 'badges':
+        return <BadgeView volunteerId={user._id} />;
+      case 'certificates':
+        return <CertificateView volunteerId={user._id} />;
+        case 'profile':
+  return <VolunteerProfile volunteerId={user._id} />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Volunteer Dashboard</h2>
-      <div className="grid md:grid-cols-2 gap-4">
-        {events.map(event => (
-          <EventCard key={event._id} event={event} userId={user?._id} />
-        ))}
+    <div className="min-h-screen bg-gray-50 p-6">
+      <h1 className="text-3xl font-bold text-indigo-700 mb-6">
+        Welcome, {user?.name || 'Volunteer'}
+      </h1>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Sidebar */}
+        <div className="lg:col-span-1">
+          <VolunteerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:col-span-4 space-y-4">
+          {renderTabContent()}
+        </div>
       </div>
     </div>
   );
