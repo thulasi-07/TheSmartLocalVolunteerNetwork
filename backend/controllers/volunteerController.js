@@ -33,3 +33,17 @@ exports.getCertificatesByVolunteer = async (req, res) => {
     res.status(500).json({ message: 'Error fetching certificates', error: err.message });
   }
 };
+
+exports.getVolunteerProfile = async (req, res) => {
+  try {
+    const volunteerId = req.params.id;
+    const volunteer = await Volunteer.findById(volunteerId).select('-password');
+    const completedEvents = await Event.find({
+      registeredVolunteers: volunteerId
+    });
+
+    res.json({ volunteer, completedEvents });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', err });
+  }
+};

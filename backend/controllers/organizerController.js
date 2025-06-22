@@ -4,20 +4,21 @@ const Event = require('../models/Event');
 const Feedback = require('../models/Feedback');
 const Badge = require('../models/Badge');
 const Certificate = require('../models/Certificate');
+const User = require('../models/User');
 
-// GET Organizer Profile
+// Get Organizer Profile with Created Events
 exports.getOrganizerProfile = async (req, res) => {
   try {
-    const organizer = await Organizer.findById(req.params.organizerId);
-    if (!organizer) return res.status(404).json({ message: 'Organizer not found' });
-    res.json(organizer);
+    const organizer = await User.findById(req.params.organizerId).select('-password');
+    const events = await Event.find({ organizerId: req.params.organizerId });
+    res.json({ organizer, events });
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching profile' });
+    res.status(500).json({ message: 'Server error', err });
   }
 };
 
-// GET Feedbacks given to events created by this organizer
-exports.getOrganizerFeedbacks = async (req, res) => {
+// Get Feedbacks for Organizer Events
+exports.getFeedbacksForOrganizer = async (req, res) => {
   try {
     const events = await Event.find({ organizerId: req.params.organizerId });
     const eventIds = events.map(event => event._id);
@@ -28,8 +29,8 @@ exports.getOrganizerFeedbacks = async (req, res) => {
   }
 };
 
-// POST Assign Badge to a Volunteer for a specific event
-exports.assignBadge = async (req, res) => {
+// Assign Badge to Volunteer
+exports.assignBadgeToVolunteer = async (req, res) => {
   try {
     const { volunteerId, eventId, stars, organizerId } = req.body;
     const badge = new Badge({ volunteerId, eventId, stars, organizerId });
@@ -40,12 +41,12 @@ exports.assignBadge = async (req, res) => {
   }
 };
 
-// POST Generate Certificate for a Volunteer
-exports.generateCertificate = async (req, res) => {
+// Generate Certificate
+exports.generateCertificateForVolunteer = async (req, res) => {
   try {
     const { volunteerId, eventId, organizerName, stars } = req.body;
     const event = await Event.findById(eventId);
-    const volunteer = await Volunteer.findById(volunteerId);
+    const volunteer = await User.findById(volunteerId);
     if (!event || !volunteer) return res.status(404).json({ message: 'Event or Volunteer not found' });
 
     const certificate = new Certificate({
@@ -54,23 +55,12 @@ exports.generateCertificate = async (req, res) => {
       eventTitle: event.title,
       volunteerName: volunteer.name,
       organizerName,
-      stars
+      stars,
     });
-    await certificate.save();
 
+    await certificate.save();
     res.status(201).json({ message: 'Certificate generated and saved' });
   } catch (err) {
     res.status(500).json({ error: 'Error generating certificate' });
-  }
-};
-exports.getOrganizerById = async (req, res) => {
-  try {
-    const organizer = await User.findById(req.params.id);
-    if (!organizer || organizer.role !== 'organizer') {
-      return res.status(404).json({ error: 'Organizer not found' });
-    }
-    res.json(organizer);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 };

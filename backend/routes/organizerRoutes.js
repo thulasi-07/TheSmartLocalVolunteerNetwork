@@ -1,3 +1,4 @@
+// routes/organizerRoutes.js
 const express = require('express');
 const router = express.Router();
 
@@ -6,20 +7,18 @@ const {
   getFeedbacksForOrganizer,
   assignBadgeToVolunteer,
   generateCertificateForVolunteer,
-   getOrganizerById
 } = require('../controllers/organizerController');
 
-// Organizer profile route
+// 1. Organizer Profile with created events
 router.get('/profile/:organizerId', getOrganizerProfile);
 
-// Get feedbacks sent to organizer's events
+// 2. View Feedbacks for organizer's events
 router.get('/feedbacks/:organizerId', getFeedbacksForOrganizer);
 
-// Assign badge or star
+// 3. Assign Badge or Star to a Volunteer
 router.post('/badges/assign', assignBadgeToVolunteer);
 
-// Generate certificate
+// 4. Generate Certificate for a Volunteer
 router.post('/certificates/generate', generateCertificateForVolunteer);
-router.get('/:id', getOrganizerById);
 
 module.exports = router;

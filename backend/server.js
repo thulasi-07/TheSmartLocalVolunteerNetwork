@@ -90,6 +90,13 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const organizerRoutes = require('./routes/organizerRoutes');
+const volunteerRoutes = require('./routes/volunteerRoutes');
+// const badgeRoutes = require('./routes/badgeRoutes');
+// const certificateRoutes = require('./routes/certificateRoutes');
+// const feedbackRoutes = require('./routes/feedbackRoutes');
+
+
 
 const errorHandler = require('./middleware/errorMiddleware');
 
@@ -104,6 +111,13 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/organizers', organizerRoutes);
+app.use('/api/volunteers', volunteerRoutes);
+// app.use('/api/badges', badgeRoutes);           
+// app.use('/api/certificates', certificateRoutes); 
+// app.use('/api/feedbacks', feedbackRoutes);
+
+
  // Make sure frontend baseURL matches
 
 app.use(errorHandler);

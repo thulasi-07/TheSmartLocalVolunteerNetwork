@@ -40,7 +40,8 @@ const router = express.Router();
 const {
   submitFeedback,
   getBadgesByVolunteer,
-  getCertificatesByVolunteer
+  getCertificatesByVolunteer,
+  getVolunteerProfile 
 } = require('../controllers/volunteerController');
 
 // Submit feedback
@@ -48,6 +49,7 @@ router.post('/feedback/:eventId', submitFeedback);
 
 // Get assigned badges
 router.get('/badges/:volunteerId', getBadgesByVolunteer);
+router.get('/profile/:id', getVolunteerProfile);
 
 // Get issued certificates
 router.get('/certificates/:volunteerId', getCertificatesByVolunteer);
