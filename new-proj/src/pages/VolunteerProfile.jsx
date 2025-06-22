@@ -1,24 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import VolunteerProfileDetails from '../components/volunteer/VolunteerProfileDetails';
-import axios from '../services/api';
+import API from '../services/authApi';
 
-const VolunteerProfile = () => {
-  const [volunteer, setVolunteer] = useState(null);
+const VolunteerProfile = ({ userId }) => {
+  const [volunteer, setVolunteer] = useState({});
+  const [completedEvents, setCompletedEvents] = useState([]);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    if (userData) {
-      axios.get(`/volunteers/${userData._id}`).then((res) => {
-        setVolunteer(res.data);
-      });
-    }
-  }, []);
-
-  if (!volunteer) return <p className="text-gray-500">Loading profile...</p>;
+    const fetchProfile = async () => {
+      const res = await API.get(`/volunteers/profile/${userId}`);
+      setVolunteer(res.data.volunteer);
+      setCompletedEvents(res.data.completedEvents);
+    };
+    fetchProfile();
+  }, [userId]);
 
   return (
-    <div className="p-6">
-      <VolunteerProfileDetails volunteer={volunteer} />
+    <div className="p-4 bg-white shadow rounded">
+      <h2 className="text-xl font-bold mb-2">Volunteer Profile</h2>
+      <p><strong>Name:</strong> {volunteer.name}</p>
+      <p><strong>Email:</strong> {volunteer.email}</p>
+      {/* <p><strong>Phone:</strong> {volunteer.phone}</p>
+      <p><strong>Interests:</strong> {volunteer.interests?.join(', ')}</p> */}
+
+      <h3 className="mt-4 font-semibold">Completed Events:</h3>
+      <ul className="list-disc list-inside">
+        {completedEvents.map(event => (
+          <li key={event._id}>{event.name}</li>
+        ))}
+      </ul>
     </div>
   );
 };

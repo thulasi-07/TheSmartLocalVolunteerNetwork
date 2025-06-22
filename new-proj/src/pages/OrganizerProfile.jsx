@@ -1,24 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import OrganizerProfileDetails from '../components/organizer/OrganizerProfileDetails';
-import axios from '../services/api';
+import API from '../services/authApi';
 
-const OrganizerProfile = () => {
-  const [organizer, setOrganizer] = useState(null);
+const OrganizerProfile = ({ userId }) => {
+  const [organizer, setOrganizer] = useState({});
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    if (userData) {
-      axios.get(`/organizers/${userData._id}`).then((res) => {
-        setOrganizer(res.data);
-      });
-    }
-  }, []);
-
-  if (!organizer) return <p className="text-gray-500">Loading profile...</p>;
+    const fetchProfile = async () => {
+      const res = await API.get(`/organizers/profile/${userId}`);
+      setOrganizer(res.data.organizer);
+      setEvents(res.data.events);
+    };
+    fetchProfile();
+  }, [userId]);
 
   return (
-    <div className="p-6">
-      <OrganizerProfileDetails organizer={organizer} />
+    <div className="p-4 bg-white shadow rounded">
+      <h2 className="text-xl font-bold mb-2">Organizer Profile</h2>
+      <p><strong>Name:</strong> {organizer.name}</p>
+      <p><strong>Email:</strong> {organizer.email}</p>
+      {/* <p><strong>Phone:</strong> {organizer.phone}</p>
+      <p><strong>Organization:</strong> {organizer.organization}</p> */}
+
+      <h3 className="mt-4 font-semibold">Created Events:</h3>
+      <ul className="list-disc list-inside">
+        {events.map(event => (
+          <li key={event._id}>{event.name}</li>
+        ))}
+      </ul>
     </div>
   );
 };
