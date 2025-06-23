@@ -82,22 +82,41 @@ const router = express.Router();
 const {
   createEvent,
   getAllEvents,
+  getEventById,
   participateInEvent,
-  markNotInterested,
   markEventCompleted,
-  getParticipantsByOrganizer,
-  getVolunteerActivities
+  markNotInterested,
+  getParticipantsForEvent,
+  getVolunteerStats,
+  getVolunteerActivityByOrganizer // ✅ Make sure this is in your controller
 } = require('../controllers/eventController');
 
-// ✅ Routes
+// ✅ Create a new event (Organizer)
 router.post('/', createEvent);
+
+// ✅ Get all events
 router.get('/', getAllEvents);
+
+// ✅ Volunteer participates in event
 router.post('/:eventId/participate', participateInEvent);
-router.post('/:eventId/not-interested', markNotInterested);
+
+// ✅ Volunteer marks event as completed
 router.post('/:eventId/complete', markEventCompleted);
 
-router.get('/organizer/:organizerId/participants', getParticipantsByOrganizer);
-router.get('/activities/:organizerId', getVolunteerActivities);
+// ✅ Volunteer marks event as not interested
+router.post('/:eventId/not-interested', markNotInterested);
 
+// ✅ Organizer gets volunteers/participants for a specific event
+router.get('/:eventId/participants', getParticipantsForEvent);
+
+// ✅ Volunteer stats (⚠️ keep this above '/:id')
+router.get('/stats/:volunteerId', getVolunteerStats);
+
+// ✅ Organizer sees all volunteer activity on their events
+router.get('/activities/:organizerId', getVolunteerActivityByOrganizer); // ✅ IMPORTANT
+
+// ✅ Get single event by ID
+router.get('/:id', getEventById);
 
 module.exports = router;
+
