@@ -68,11 +68,19 @@
 // module.exports = router;
 
 
+// backend/routes/feedbackRoutes.js
 const express = require('express');
 const router = express.Router();
-const { submitFeedback, getFeedbacksByOrganizer } = require('../controllers/feedbackController');
+const {
+  submitFeedback,
+  getFeedbacksForOrganizer
+} = require('../controllers/feedbackController');
 
-router.post('/submit', submitFeedback);
-router.get('/organizer/:organizerId', getFeedbacksByOrganizer);
+// ✅ POST - Submit feedback from volunteer
+router.post('/', submitFeedback);
+
+// ✅ GET - Organizer gets all feedbacks related to their events
+router.get('/organizer/:organizerId', getFeedbacksForOrganizer);
 
 module.exports = router;
+
