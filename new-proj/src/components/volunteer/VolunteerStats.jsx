@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../services/api'; // make sure this points to your main axios config
+import axios from '../../services/api'; // Make sure this points to your configured axios instance
 
 const VolunteerStats = () => {
   const [stats, setStats] = useState({
@@ -12,12 +12,16 @@ const VolunteerStats = () => {
     const fetchStats = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user?._id) return;
+        if (!user || !user._id) return;
 
-        const response = await axios.get(`/events/volunteer-stats/${user._id}`);
-        setStats(response.data);
-      } catch (err) {
-        console.error('Failed to load volunteer stats', err);
+        const res = await axios.get(`/events/stats/${user._id}`);
+        setStats({
+          participated: res.data.participated || 0,
+          completed: res.data.completed || 0,
+          notInterested: res.data.notInterested || 0,
+        });
+      } catch (error) {
+        console.error('Error fetching volunteer stats:', error);
       }
     };
 

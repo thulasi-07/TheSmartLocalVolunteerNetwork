@@ -2,20 +2,42 @@ import React, { useState, useEffect } from 'react';
 import {
   participateInEvent,
   markNotInterested,
-  markEventCompleted
+  markEventCompleted,
+  fetchEventById
 } from '../../services/eventApi';
 import { toast } from 'react-toastify';
 
 const EventCard = ({ event, userId: propUserId }) => {
-  const [status, setStatus] = useState(event.status || '');
+  const [status, setStatus] = useState('');
   const [userId, setUserId] = useState(propUserId);
 
   useEffect(() => {
-    if (!userId) {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      setUserId(storedUser?._id);
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (!userId && storedUser) {
+      setUserId(storedUser._id);
     }
-  }, [userId]);
+
+    const determineStatus = async () => {
+      try {
+        const latestEvent = await fetchEventById(event._id);
+        const { participants, completedVolunteers, notInterested } = latestEvent.data;
+
+        if (completedVolunteers.includes(storedUser._id)) {
+          setStatus('completed');
+        } else if (participants.includes(storedUser._id)) {
+          setStatus('participated');
+        } else if (notInterested.includes(storedUser._id)) {
+          setStatus('not_interested');
+        } else {
+          setStatus('');
+        }
+      } catch (err) {
+        console.error('Error fetching event status', err);
+      }
+    };
+
+    if (userId) determineStatus();
+  }, [userId, event._id]);
 
   const handleParticipation = async () => {
     try {

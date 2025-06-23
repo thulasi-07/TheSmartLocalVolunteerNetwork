@@ -56,4 +56,13 @@ export const markEventCompleted = (eventId, volunteerId) => {
   return API.post(`/events/${eventId}/complete`, { volunteerId });
 };
 
+export const getVolunteerEventsStats = (volunteerId) => {
+  return API.get(`/events/stats/${volunteerId}`);
+};
+
+export const getEventVolunteerActivities = (eventId) => {
+  return API.get(`/events/${eventId}/participants`);
+};
+
+
 

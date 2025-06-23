@@ -3,8 +3,8 @@ import React from 'react';
 
 const VolunteerSidebar = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    // { key: 'dashboard', label: 'Dashboard Overview' },
-    { key: 'profile', label: 'My Profile' },
+    { key: 'dashboard', label: 'Dashboard Overview' },
+    // { key: 'profile', label: 'My Profile' },
     { key: 'feedback', label: 'Send Feedback' },
     { key: 'badges', label: 'View Badges / Stars' },
     { key: 'certificates', label: 'My Certificates' },

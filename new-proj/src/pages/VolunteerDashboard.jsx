@@ -11,7 +11,7 @@ import { fetchAllEvents } from '../services/eventApi';
 import { toast } from 'react-toastify';
 
 const VolunteerDashboard = () => {
-  const [activeTab, setActiveTab] = useState('events');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
 
@@ -37,7 +37,7 @@ const VolunteerDashboard = () => {
     if (!user) return <p className="text-center text-gray-600">Loading user data...</p>;
 
     switch (activeTab) {
-      case 'events':
+      case 'dashboard':
         return (
           <>
             <VolunteerStats volunteerId={user._id} />
@@ -54,8 +54,8 @@ const VolunteerDashboard = () => {
         return <BadgeView volunteerId={user._id} />;
       case 'certificates':
         return <CertificateView volunteerId={user._id} />;
-        case 'profile':
-  return <VolunteerProfile volunteerId={user._id} />;
+      case 'profile':
+        return <VolunteerProfile volunteerId={user._id} />;
       default:
         return null;
     }
@@ -67,15 +67,10 @@ const VolunteerDashboard = () => {
         Welcome, {user?.name || 'Volunteer'}
       </h1>
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Sidebar */}
         <div className="lg:col-span-1">
           <VolunteerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
-
-        {/* Main Content */}
-        <div className="lg:col-span-4 space-y-4">
-          {renderTabContent()}
-        </div>
+        <div className="lg:col-span-4 space-y-4">{renderTabContent()}</div>
       </div>
     </div>
   );

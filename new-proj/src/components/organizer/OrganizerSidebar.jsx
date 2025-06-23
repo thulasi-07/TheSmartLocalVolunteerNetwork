@@ -3,7 +3,7 @@ import React from 'react';
 
 const OrganizerSidebar = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    { key: 'profile', label: 'My Profile' },
+    // { key: 'profile', label: 'My Profile' },
     { key: 'dashboard', label: 'Dashboard Overview' },
     { key: 'activities', label: 'Volunteer Activities' },
     { key: 'feedback', label: 'View Feedbacks' },
