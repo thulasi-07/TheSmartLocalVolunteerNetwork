@@ -16,3 +16,7 @@ export const getOrganizerProfile = (organizerId) => {
 export const getOrganizerById = (organizerId) => {
   return API.get(`/organizers/${organizerId}`);
 };
+
+export const getFeedbacksForOrganizer = (organizerId) => {
+  return API.get(`/organizers/${organizerId}/feedbacks`);
+};

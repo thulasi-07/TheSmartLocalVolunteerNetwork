@@ -36,6 +36,7 @@ const OrganizerDashboard = () => {
         return <VolunteerActivityPanel organizerId={user._id} />;
       case 'feedback':
         return <FeedbackPanel organizerId={user._id} />;
+        
       case 'badges':
         return <BadgeAssignmentPanel organizerId={user._id} />;
       case 'certificates':

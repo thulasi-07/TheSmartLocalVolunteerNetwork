@@ -1,3 +1,4 @@
+// src/components/volunteer/FeedbackForm.jsx
 import React, { useEffect, useState } from 'react';
 import axios from '../../services/api';
 import { toast } from 'react-toastify';
@@ -7,22 +8,18 @@ const FeedbackForm = ({ volunteerId }) => {
   const [message, setMessage] = useState('');
   const [events, setEvents] = useState([]);
 
-  // Fetch events
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchCompletedEvents = async () => {
       try {
-        const res = await axios.get('/events');
-        // Filter only events this volunteer participated in (optional)
-        const participatedEvents = res.data.filter(event =>
-          event.volunteers?.includes(volunteerId)
-        );
-        setEvents(participatedEvents);
+        const res = await axios.get(`/events/stats/${volunteerId}`);
+        const completedEvents = res.data.completedEvents || [];
+        setEvents(completedEvents);
       } catch (err) {
-        toast.error('Failed to load events');
+        toast.error('Failed to load completed events');
       }
     };
 
-    if (volunteerId) fetchEvents();
+    if (volunteerId) fetchCompletedEvents();
   }, [volunteerId]);
 
   const handleSubmit = async (e) => {
@@ -30,9 +27,9 @@ const FeedbackForm = ({ volunteerId }) => {
     if (!eventId || !message) return toast.error('Please fill in all fields');
 
     try {
-      await axios.post('/feedback/submit', { volunteerId, eventId, message });
+      await axios.post('/feedback', { volunteerId, eventId, message });
       toast.success('Feedback submitted!');
-      alert('Thank you for your feedback!');
+      window.alert('Thank you for your feedback!');
       setEventId('');
       setMessage('');
     } catch (err) {
@@ -44,13 +41,12 @@ const FeedbackForm = ({ volunteerId }) => {
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4 text-indigo-700">Submit Feedback</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Dropdown to select event */}
         <select
           value={eventId}
           onChange={(e) => setEventId(e.target.value)}
           className="w-full border px-4 py-2 rounded text-gray-700"
         >
-          <option value="">Select an Event</option>
+          <option value="">Select a Completed Event</option>
           {events.map(event => (
             <option key={event._id} value={event._id}>
               {event.title}
@@ -58,7 +54,6 @@ const FeedbackForm = ({ volunteerId }) => {
           ))}
         </select>
 
-        {/* Feedback message */}
         <textarea
           placeholder="Your feedback..."
           className="w-full border px-4 py-2 rounded h-28"
@@ -66,8 +61,10 @@ const FeedbackForm = ({ volunteerId }) => {
           onChange={(e) => setMessage(e.target.value)}
         />
 
-        {/* Submit button */}
-        <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+        <button
+          type="submit"
+          className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+        >
           Submit
         </button>
       </form>

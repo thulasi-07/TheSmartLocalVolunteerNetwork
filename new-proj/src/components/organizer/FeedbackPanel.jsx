@@ -1,6 +1,6 @@
 // src/components/organizer/FeedbackPanel.jsx
 import React, { useEffect, useState } from 'react';
-import axios from '../../services/authApi';
+import axios from '../../services/api'; // ✅ Make sure this is correct
 import { toast } from 'react-toastify';
 
 const FeedbackPanel = ({ organizerId }) => {
@@ -9,7 +9,8 @@ const FeedbackPanel = ({ organizerId }) => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const res = await axios.get(`/api/feedback/organizer/${organizerId}`);
+       const res = await axios.get(`/feedback/organizer/${organizerId}`);
+
 
         setFeedbacks(res.data);
       } catch (err) {
@@ -18,9 +19,7 @@ const FeedbackPanel = ({ organizerId }) => {
       }
     };
 
-    if (organizerId) {
-      fetchFeedbacks();
-    }
+    if (organizerId) fetchFeedbacks();
   }, [organizerId]);
 
   return (
@@ -35,10 +34,14 @@ const FeedbackPanel = ({ organizerId }) => {
             <li key={feedback._id} className="py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-medium text-gray-900">{feedback.volunteerName}</p>
+                  <p className="text-lg font-medium text-gray-900">
+                    {feedback.volunteerName}
+                  </p>
                   <p className="text-sm text-gray-600">{feedback.eventTitle}</p>
                 </div>
-                <span className="text-sm text-gray-500">{new Date(feedback.createdAt).toLocaleDateString()}</span>
+                <span className="text-sm text-gray-500">
+                  {new Date(feedback.createdAt).toLocaleDateString()}
+                </span>
               </div>
               <p className="mt-2 text-gray-700 text-sm">{feedback.message}</p>
             </li>
