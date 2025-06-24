@@ -1,22 +1,35 @@
 const Badge = require('../models/Badge');
+const User = require('../models/User');
 
+// Assign badge to a volunteer
 exports.assignBadge = async (req, res) => {
-  const { volunteerId, eventId, badgeType, givenBy } = req.body;
   try {
-    const badge = new Badge({ volunteerId, eventId, badgeType, givenBy });
+    const { volunteerId, organizerId, badgeTitle, stars, category, reason } = req.body;
+
+    const badge = new Badge({
+      volunteerId,
+      organizerId,
+      badgeTitle,
+      stars,
+      category,
+      reason,
+    });
+
     await badge.save();
-    res.status(201).json({ message: 'Badge assigned', badge });
+    res.status(201).json({ message: 'Badge assigned successfully', badge });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: 'Error assigning badge', error: err.message });
   }
 };
 
+// Get badges for a specific volunteer
 exports.getBadgesForVolunteer = async (req, res) => {
-  const { volunteerId } = req.params;
   try {
-    const badges = await Badge.find({ volunteerId }).populate('eventId', 'title');
+    const { volunteerId } = req.params;
+
+    const badges = await Badge.find({ volunteerId });
     res.json(badges);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: 'Error fetching badges', error: err.message });
   }
 };

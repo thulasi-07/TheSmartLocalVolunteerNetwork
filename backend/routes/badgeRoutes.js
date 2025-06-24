@@ -59,9 +59,16 @@
 
 const express = require('express');
 const router = express.Router();
-const { assignBadge, getBadgesForVolunteer } = require('../controllers/badgeController');
+const {
+  assignBadge,
+  getBadgesForVolunteer
+} = require('../controllers/badgeController');
 
+// POST: Assign a badge
 router.post('/assign', assignBadge);
-router.get('/:volunteerId', getBadgesForVolunteer);
+
+// GET: All badges for a volunteer
+router.get('/volunteer/:volunteerId', getBadgesForVolunteer);
 
 module.exports = router;
+
