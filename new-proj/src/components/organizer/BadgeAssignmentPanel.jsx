@@ -1,96 +1,161 @@
+// src/components/organizer/BadgeAssignmentPanel.jsx
 import React, { useEffect, useState } from 'react';
-import axios from '../../services/authApi';
+import axios from '../../services/api';
 import { toast } from 'react-toastify';
 
 const BadgeAssignmentPanel = ({ organizerId }) => {
   const [volunteers, setVolunteers] = useState([]);
-  const [selectedBadges, setSelectedBadges] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({
+    volunteerId: '',
+    badgeTitle: '',
+    stars: '',
+    category: '',
+    reason: '',
+  });
 
+  const badgeCategories = [
+    'Teamwork',
+    'Leadership',
+    'Punctuality',
+    'Creativity',
+    'Commitment',
+    'Communication',
+  ];
+
+  const starOptions = [1, 2, 3, 4, 5];
+
+  // ✅ Fetch volunteers
   useEffect(() => {
     const fetchVolunteers = async () => {
       try {
-        const res = await axios.get(`/events/activities/${organizerId}`);
-        setVolunteers(res.data);
+        const res = await axios.get('/users/volunteers');
+        setVolunteers(res.data || []);
       } catch (err) {
-        console.error('Failed to fetch volunteer data', err);
-        toast.error('Could not load volunteer activity');
+        toast.error('Failed to load volunteers');
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchVolunteers();
-  }, [organizerId]);
+  }, []);
 
-  const handleBadgeChange = (volunteerId, badge) => {
-    setSelectedBadges({ ...selectedBadges, [volunteerId]: badge });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: name === 'stars' ? Number(value) : value
+    }));
   };
 
-  const assignBadge = async (volunteerId) => {
-    try {
-      const badge = selectedBadges[volunteerId];
-      if (!badge) {
-        toast.warn('Please select a badge');
-        return;
-      }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { volunteerId, badgeTitle, stars, category, reason } = form;
 
-      await axios.post(`/events/assign-badge`, {
+    if (!volunteerId || !badgeTitle || !stars || !category || !reason) {
+      return toast.error('Please fill in all fields');
+    }
+
+    try {
+      await axios.post('/badges/assign', {
+        ...form,
         organizerId,
-        volunteerId,
-        badge,
       });
 
-      toast.success(`Badge "${badge}" assigned successfully`);
+      toast.success('✅ Badge assigned successfully!');
+      alert('🎉 Badge/Star has been successfully assigned to the volunteer!');
+      setForm({
+        volunteerId: '',
+        badgeTitle: '',
+        stars: '',
+        category: '',
+        reason: '',
+      });
     } catch (err) {
-      console.error('Failed to assign badge', err);
-      toast.error('Error assigning badge');
+      toast.error('❌ Failed to assign badge');
     }
   };
 
-  const badgeOptions = ['🌟 Star Volunteer', '🔥 Top Contributor', '🎯 Task Master'];
-
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold text-indigo-700 mb-4">🎖 Assign Badges</h2>
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
+      <h2 className="text-2xl font-bold text-indigo-700 mb-4">🏅 Assign Performance Badge</h2>
 
-      {volunteers.length === 0 ? (
-        <p className="text-gray-500">No volunteer activity available.</p>
+      {loading ? (
+        <p className="text-gray-500">Loading volunteers...</p>
       ) : (
-        <div className="space-y-6">
-          {volunteers.map((v, index) => (
-            <div
-              key={index}
-              className="flex flex-col md:flex-row items-start md:items-center justify-between border-b pb-4"
-            >
-              <div>
-                <p className="font-medium text-gray-800">
-                  👤 {v.volunteerName} — <span className="text-sm text-gray-600">({v.status})</span>
-                </p>
-                <p className="text-sm text-gray-500">📌 Event: {v.eventTitle}</p>
-              </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Volunteer Selector */}
+          <select
+            name="volunteerId"
+            value={form.volunteerId}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded"
+          >
+            <option value="">Select a Volunteer</option>
+            {volunteers.map((v) => (
+              <option key={v._id} value={v._id}>
+                {v.name} ({v.email})
+              </option>
+            ))}
+          </select>
 
-              <div className="flex gap-3 items-center mt-2 md:mt-0">
-                <select
-                  className="border border-gray-300 rounded px-3 py-1 text-sm"
-                  value={selectedBadges[v.volunteerName] || ''}
-                  onChange={(e) => handleBadgeChange(v.volunteerName, e.target.value)}
-                >
-                  <option value="">Select Badge</option>
-                  {badgeOptions.map((badge, idx) => (
-                    <option key={idx} value={badge}>
-                      {badge}
-                    </option>
-                  ))}
-                </select>
+          {/* Badge Title */}
+          <input
+            type="text"
+            name="badgeTitle"
+            value={form.badgeTitle}
+            onChange={handleChange}
+            placeholder="Enter a badge name (e.g., Star Performer)"
+            className="w-full border px-4 py-2 rounded"
+          />
 
-                <button
-                  className="bg-indigo-600 text-white px-4 py-1 rounded text-sm hover:bg-indigo-700"
-                  onClick={() => assignBadge(v.volunteerName)}
-                >
-                  Assign
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+          {/* Star Rating */}
+          <select
+            name="stars"
+            value={form.stars}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded"
+          >
+            <option value="">Select Star Rating</option>
+            {starOptions.map((s) => (
+              <option key={s} value={s}>
+                {`${s} Star${s > 1 ? 's' : ''}`}
+              </option>
+            ))}
+          </select>
+
+          {/* Category */}
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded"
+          >
+            <option value="">Select a Category</option>
+            {badgeCategories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+
+          {/* Reason */}
+          <textarea
+            name="reason"
+            value={form.reason}
+            onChange={handleChange}
+            placeholder="Write a reason for this badge..."
+            className="w-full border px-4 py-2 rounded h-28"
+          />
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition"
+          >
+            Assign Badge
+          </button>
+        </form>
       )}
     </div>
   );
