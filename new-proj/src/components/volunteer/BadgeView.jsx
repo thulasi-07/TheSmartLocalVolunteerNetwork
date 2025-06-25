@@ -9,10 +9,11 @@ const BadgeView = ({ volunteerId }) => {
   useEffect(() => {
     const fetchBadges = async () => {
       try {
-        const res = await axios.get(`/badges/volunteer/${volunteerId}`);
+        const res = await axios.get(`/badges/volunteer/${volunteerId}`); // ✅ use correct route
         setBadges(res.data);
       } catch (err) {
-        toast.error('Failed to load badges');
+        toast.error('❌ Failed to load badges');
+        console.error(err);
       }
     };
 
@@ -28,14 +29,13 @@ const BadgeView = ({ volunteerId }) => {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {badges.map((badge) => (
-            <div key={badge._id} className="border p-4 rounded-lg bg-indigo-50 shadow">
+            <div key={badge._id} className="border p-4 rounded-lg bg-indigo-50 shadow-sm">
               <h3 className="text-lg font-semibold text-indigo-800">{badge.badgeTitle}</h3>
-              <p className="text-sm text-gray-700 mt-1">
-                ⭐ <strong>{badge.stars}</strong> Star{badge.stars > 1 ? 's' : ''} <br />
-                📂 <strong>Category:</strong> {badge.category} <br />
-                📝 <strong>Reason:</strong> {badge.reason} <br />
-                📅 <strong>Date:</strong>{' '}
-                {new Date(badge.createdAt).toLocaleDateString()}
+              <p className="text-sm text-gray-700 mt-1 space-y-1">
+                <span>⭐ <strong>{badge.stars}</strong> Star{badge.stars > 1 ? 's' : ''}</span><br />
+                <span>📂 <strong>Category:</strong> {badge.category}</span><br />
+                <span>📝 <strong>Reason:</strong> {badge.reason}</span><br />
+                <span>📅 <strong>Date:</strong> {new Date(badge.createdAt).toLocaleDateString()}</span>
               </p>
             </div>
           ))}

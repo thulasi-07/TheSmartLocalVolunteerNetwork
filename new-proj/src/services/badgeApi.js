@@ -1,11 +1,10 @@
-import axios from './api'; // Your pre-configured axios instance
+// src/services/badgeApi.js
+import axios from './api'; // assuming axios is set up here with baseURL
 
-// Assign a badge (organizer side)
-export const assignBadge = async (data) => {
-  return axios.post('/badges', data);
-};
+// Assign badge
+export const assignBadge = (badgeData) =>
+  axios.post('/badges/assign', data);
 
-// Get badges for a volunteer
-export const getBadgesForVolunteer = async (volunteerId) => {
-  return axios.get(`/badges/${volunteerId}`);
-};
+// Get badges by volunteer ID
+export const getVolunteerBadges = (volunteerId) =>
+  axios.get(`/badges/volunteer/${volunteerId}`);
