@@ -1,22 +1,34 @@
 // // models/Event.js
+// models/Event.js
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  date: String,
-  time: String,
-  location: String,
-  volunteersNeeded: Number,
-  organizerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  title: { type: String, required: true },
+  description: { type: String },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  location: { type: String, required: true },
+  volunteersNeeded: { type: Number, required: true },
+
+  // Organizer who created this event
+  organizerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+
+  // All volunteers who registered
   volunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+
+  // Volunteers who confirmed participation
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-notInterested: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-completedVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
- // ✅ NEW FIELD
+
+  // Users who opted out
+  notInterested: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+
+  // ✅ Only these volunteers are eligible for badges
+  completedVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);
+
 
 
 // models/Event.js

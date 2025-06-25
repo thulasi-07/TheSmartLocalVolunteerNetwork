@@ -1,35 +1,38 @@
 const Badge = require('../models/Badge');
-const User = require('../models/User');
 
-// Assign badge to a volunteer
 exports.assignBadge = async (req, res) => {
   try {
-    const { volunteerId, organizerId, badgeTitle, stars, category, reason } = req.body;
+    const { organizerId, volunteerId, badgeTitle, stars, category, reason } = req.body;
 
-    const badge = new Badge({
-      volunteerId,
-      organizerId,
-      badgeTitle,
-      stars,
-      category,
-      reason,
-    });
-
+    const badge = new Badge({ organizerId, volunteerId, badgeTitle, stars, category, reason });
     await badge.save();
-    res.status(201).json({ message: 'Badge assigned successfully', badge });
+    res.status(201).json({ message: 'Badge assigned successfully!' });
   } catch (err) {
-    res.status(500).json({ message: 'Error assigning badge', error: err.message });
+    console.error('Error assigning badge:', err);
+    res.status(500).json({ error: 'Failed to assign badge' });
   }
 };
 
-// Get badges for a specific volunteer
 exports.getBadgesForVolunteer = async (req, res) => {
   try {
     const { volunteerId } = req.params;
-
     const badges = await Badge.find({ volunteerId });
-    res.json(badges);
+    res.status(200).json(badges);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching badges', error: err.message });
+    console.error('Error fetching badges:', err);
+    res.status(500).json({ error: 'Failed to load badges' });
+  }
+};
+// ✅ Get all badges assigned to a specific volunteer
+exports.getBadgesByVolunteer = async (req, res) => {
+  try {
+    const { volunteerId } = req.params;
+
+    const badges = await Badge.find({ volunteerId }).sort({ createdAt: -1 });
+
+    res.status(200).json(badges);
+  } catch (err) {
+    console.error('❌ Error fetching volunteer badges:', err);
+    res.status(500).json({ error: 'Failed to fetch badges' });
   }
 };

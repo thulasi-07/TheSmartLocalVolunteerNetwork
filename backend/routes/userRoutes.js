@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getAllVolunteers } = require('../controllers/userController');
+const { getVolunteersByOrganizer } = require('../controllers/userController');
 
-router.get('/volunteers', getAllVolunteers);
+router.get('/volunteers/by-organizer/:organizerId', getVolunteersByOrganizer);
 
 module.exports = router;

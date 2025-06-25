@@ -56,19 +56,17 @@
 // // router.post('/award', authMiddleware, awardBadge);
 
 // module.exports = router;
-
+// routes/badgeRoutes.js
 const express = require('express');
 const router = express.Router();
-const {
-  assignBadge,
-  getBadgesForVolunteer
-} = require('../controllers/badgeController');
+const { assignBadge, getBadgesForVolunteer, getBadgesByVolunteer } = require('../controllers/badgeController');
 
-// POST: Assign a badge
 router.post('/assign', assignBadge);
-
-// GET: All badges for a volunteer
 router.get('/volunteer/:volunteerId', getBadgesForVolunteer);
+// routes/badgeRoutes.js
+router.get('/volunteer/:volunteerId', getBadgesByVolunteer);
+
 
 module.exports = router;
+
 
