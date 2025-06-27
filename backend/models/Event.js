@@ -5,29 +5,52 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
+
   date: { type: String, required: true },
   time: { type: String, required: true },
   location: { type: String, required: true },
   volunteersNeeded: { type: Number, required: true },
 
-  // Organizer who created this event
-  organizerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  // ✅ Organizer who created the event
+  organizerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
 
-  // All volunteers who registered
-  volunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  // ✅ All registered volunteers
+  volunteers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
 
-  // Volunteers who confirmed participation
-  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  // ✅ Volunteers who agreed to participate
+  participants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
 
-  // Users who opted out
-  notInterested: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  // ✅ Users who opted out or marked not interested
+  notInterested: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
 
-  // ✅ Only these volunteers are eligible for badges
-  completedVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
-  
-}, { timestamps: true });
+  // ✅ Only these volunteers are eligible for badges and certificates
+  completedVolunteers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }]
+}, {
+  timestamps: true
+});
 
 module.exports = mongoose.model('Event', eventSchema);
+
 
 
 

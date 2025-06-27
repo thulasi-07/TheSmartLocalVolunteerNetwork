@@ -95,6 +95,8 @@ const volunteerRoutes = require('./routes/volunteerRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const badgeRoutes = require('./routes/badgeRoutes');
 const userRoutes = require('./routes/userRoutes');
+const certificateRoutes = require('./routes/certificateRoutes');
+
 // const badgeRoutes = require('./routes/badgeRoutes');
 // const certificateRoutes = require('./routes/certificateRoutes');
 // const feedbackRoutes = require('./routes/feedbackRoutes');
@@ -119,6 +121,7 @@ app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/certificates', certificateRoutes);
 // app.use('/api/badges', badgeRoutes);           
 // app.use('/api/certificates', certificateRoutes); 
 // app.use('/api/feedbacks', feedbackRoutes);

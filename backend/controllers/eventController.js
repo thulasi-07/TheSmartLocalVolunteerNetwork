@@ -1,7 +1,7 @@
 const Event = require('../models/Event');
 const User = require('../models/User');
 
-// ✅ Create new event
+// Create Event
 exports.createEvent = async (req, res) => {
   try {
     const newEvent = new Event(req.body);
@@ -12,7 +12,7 @@ exports.createEvent = async (req, res) => {
   }
 };
 
-// ✅ Get all events
+// Get All Events
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await Event.find().populate('organizerId', 'name email');
@@ -22,7 +22,7 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
-// ✅ Get single event by ID
+// Get Event By ID
 exports.getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -33,7 +33,7 @@ exports.getEventById = async (req, res) => {
   }
 };
 
-// ✅ Participate in an event
+// Participate
 exports.participateInEvent = async (req, res) => {
   try {
     const { volunteerId } = req.body;
@@ -44,11 +44,7 @@ exports.participateInEvent = async (req, res) => {
       event.volunteers.push(volunteerId);
     }
 
-    // Remove from notInterested if previously marked
-    event.notInterested = event.notInterested.filter(
-      (id) => id.toString() !== volunteerId
-    );
-
+    event.notInterested = event.notInterested.filter(id => id.toString() !== volunteerId);
     await event.save();
     res.json({ message: 'Participation successful', event });
   } catch (err) {
@@ -56,7 +52,26 @@ exports.participateInEvent = async (req, res) => {
   }
 };
 
-// ✅ Mark event as completed by volunteer
+// Mark Not Interested
+exports.markNotInterested = async (req, res) => {
+  try {
+    const { volunteerId } = req.body;
+    const event = await Event.findById(req.params.eventId);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    if (!event.notInterested.includes(volunteerId)) {
+      event.notInterested.push(volunteerId);
+    }
+
+    event.volunteers = event.volunteers.filter(id => id.toString() !== volunteerId);
+    await event.save();
+    res.json({ message: 'Marked as not interested', event });
+  } catch (err) {
+    res.status(500).json({ message: 'Error marking as not interested', error: err.message });
+  }
+};
+
+// Mark Completed
 exports.markEventCompleted = async (req, res) => {
   try {
     const { volunteerId } = req.body;
@@ -74,55 +89,35 @@ exports.markEventCompleted = async (req, res) => {
   }
 };
 
-// ✅ Mark event as not interested
-exports.markNotInterested = async (req, res) => {
-  try {
-    const { volunteerId } = req.body;
-    const event = await Event.findById(req.params.eventId);
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-
-    if (!event.notInterested.includes(volunteerId)) {
-      event.notInterested.push(volunteerId);
-    }
-
-    // Remove from volunteers if they previously joined
-    event.volunteers = event.volunteers.filter(
-      (id) => id.toString() !== volunteerId
-    );
-
-    await event.save();
-    res.json({ message: 'Marked as not interested', event });
-  } catch (err) {
-    res.status(500).json({ message: 'Error marking as not interested', error: err.message });
-  }
-};
-
-// ✅ Get participants of an event
+// Participants Summary
 exports.getParticipantsForEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.eventId).populate('volunteers', 'name email');
+    const event = await Event.findById(req.params.eventId)
+      .populate('volunteers', 'name email')
+      .populate('completedVolunteers', 'name email')
+      .populate('notInterested', 'name email');
+
     if (!event) return res.status(404).json({ message: 'Event not found' });
 
-    res.json(event.volunteers);
+    res.json({
+      participants: event.volunteers,
+      completed: event.completedVolunteers,
+      notInterested: event.notInterested
+    });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching participants', error: err.message });
   }
 };
 
+// Volunteer Stats
 exports.getVolunteerStats = async (req, res) => {
   try {
     const volunteerId = req.params.volunteerId;
     const allEvents = await Event.find();
 
-    const participated = allEvents.filter(event =>
-      event.participants.includes(volunteerId)
-    );
-    const completed = allEvents.filter(event =>
-      event.completedVolunteers.includes(volunteerId)
-    );
-    const notInterested = allEvents.filter(event =>
-      event.notInterested.includes(volunteerId)
-    );
+    const participated = allEvents.filter(event => event.volunteers.includes(volunteerId));
+    const completed = allEvents.filter(event => event.completedVolunteers.includes(volunteerId));
+    const notInterested = allEvents.filter(event => event.notInterested.includes(volunteerId));
 
     res.json({
       participated: participated.length,
@@ -137,34 +132,32 @@ exports.getVolunteerStats = async (req, res) => {
   }
 };
 
-// controllers/eventController.js
-
-exports.getParticipantsForEvent = async (req, res) => {
-  const { eventId } = req.params;
-
+// Events by Organizer
+exports.getEventsByOrganizer = async (req, res) => {
   try {
-    const event = await Event.findById(eventId)
-      .populate('participants', 'name email')
-      .populate('completedVolunteers', 'name email')
-      .populate('notInterested', 'name email');
-
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-
-    res.json({
-      participants: event.participants,
-      completed: event.completedVolunteers,
-      notInterested: event.notInterested
-    });
+    const events = await Event.find({ organizerId: req.params.organizerId });
+    res.json(events);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching participants', error: err.message });
+    res.status(500).json({ error: 'Failed to fetch events for organizer' });
   }
 };
-// ✅ Get volunteer activity for all events created by a specific organizer
+
+// Completed Volunteers for Certificate
+exports.getCompletedVolunteersForEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.eventId).populate('completedVolunteers', '_id name email');
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    res.status(200).json(event.completedVolunteers);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch completed volunteers' });
+  }
+};
+
+// Organizer Activity Tracker
 exports.getVolunteerActivityByOrganizer = async (req, res) => {
   try {
     const { organizerId } = req.params;
 
-    // Find all events created by this organizer
     const events = await Event.find({ organizerId })
       .populate('volunteers', 'name')
       .populate('notInterested', 'name')
@@ -173,28 +166,11 @@ exports.getVolunteerActivityByOrganizer = async (req, res) => {
     const activityList = [];
 
     for (const event of events) {
-      // Participated Volunteers
-      event.volunteers.forEach(volunteer => {
-        activityList.push({
-          volunteerName: volunteer.name,
-          eventTitle: event.title,
-          status: 'Participated'
-        });
-      });
-
-      // Not Interested Volunteers
-      event.notInterested.forEach(volunteer => {
-        activityList.push({
-          volunteerName: volunteer.name,
-          eventTitle: event.title,
-          status: 'Not Interested'
-        });
-      });
-
-      // Completed Volunteers
       event.completedVolunteers.forEach(volunteer => {
         activityList.push({
           volunteerName: volunteer.name,
+          volunteerId: volunteer._id,
+          eventId: event._id,
           eventTitle: event.title,
           status: 'Completed'
         });
@@ -207,5 +183,23 @@ exports.getVolunteerActivityByOrganizer = async (req, res) => {
   }
 };
 
+// Organizer Stats for Dashboard
+exports.getEventsByOrganizerStats = async (req, res) => {
+  try {
+    const { organizerId } = req.params;
+    const events = await Event.find({ organizerId });
 
+    const totalEvents = events.length;
+    const completedEvents = events.filter(event => event.status === 'completed').length;
+    const totalParticipants = events.reduce((acc, event) => acc + (event.volunteers?.length || 0), 0);
 
+    res.status(200).json({
+      totalEvents,
+      completedEvents,
+      totalParticipants,
+    });
+  } catch (err) {
+    console.error('❌ Error fetching organizer stats:', err);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+};
