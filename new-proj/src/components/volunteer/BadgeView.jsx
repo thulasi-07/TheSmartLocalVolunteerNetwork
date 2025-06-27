@@ -9,7 +9,7 @@ const BadgeView = ({ volunteerId }) => {
   useEffect(() => {
     const fetchBadges = async () => {
       try {
-        const res = await axios.get(`/badges/volunteer/${volunteerId}`); // ✅ use correct route
+        const res = await axios.get(`/badges/volunteer/${volunteerId}`);
         setBadges(res.data);
       } catch (err) {
         toast.error('❌ Failed to load badges');

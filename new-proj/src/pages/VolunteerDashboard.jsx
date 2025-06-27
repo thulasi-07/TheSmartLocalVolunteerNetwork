@@ -5,7 +5,7 @@ import VolunteerStats from '../components/volunteer/VolunteerStats';
 import EventCard from '../components/events/EventCard';
 import FeedbackForm from '../components/volunteer/FeedbackForm';
 import BadgeView from '../components/volunteer/BadgeView';
-import CertificateView from '../components/volunteer/CertificateView';
+import CertificateViewer from '../components/volunteer/CertificateView'; // ✅ fixed name
 import VolunteerProfile from '../pages/VolunteerProfile';
 import { fetchAllEvents } from '../services/eventApi';
 import { toast } from 'react-toastify';
@@ -53,7 +53,7 @@ const VolunteerDashboard = () => {
       case 'badges':
         return <BadgeView volunteerId={user._id} />;
       case 'certificates':
-        return <CertificateView volunteerId={user._id} />;
+        return <CertificateViewer volunteerId={user._id} />; // ✅ Correct component usage
       case 'profile':
         return <VolunteerProfile volunteerId={user._id} />;
       default:

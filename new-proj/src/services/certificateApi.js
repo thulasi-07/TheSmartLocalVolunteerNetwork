@@ -2,15 +2,15 @@
 import API from './api';
 
 /**
- * ✅ Generate certificate for a volunteer
- * @param {Object} data - { volunteerId, eventId, stars, organizerName }
+ * ✅ Generate a certificate for a volunteer
+ * @param {Object} data - { volunteerId, eventId, organizerId, description }
  */
 export const generateCertificate = (data) => {
-  return API.post('/organizers/certificates/generate', data);
+  return API.post('/certificates/generate', data); // ✅ Correct endpoint
 };
 
 /**
- * ✅ Get certificates issued to a volunteer
+ * ✅ Get all certificates issued to a volunteer
  * @param {String} volunteerId
  */
 export const getCertificatesByVolunteer = (volunteerId) => {

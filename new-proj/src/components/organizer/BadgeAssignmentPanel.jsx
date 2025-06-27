@@ -84,11 +84,10 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
         <p className="text-gray-500">🔄 Loading volunteers...</p>
       ) : volunteers.length === 0 ? (
         <p className="text-red-500 font-medium">
-          🚫 No eligible volunteers found. Please create an event and wait for participants.
+          🚫 No eligible volunteers found. Please create an event and wait for completions.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Volunteer Selector */}
           <select
             name="volunteerId"
             value={form.volunteerId}
@@ -103,7 +102,6 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
             ))}
           </select>
 
-          {/* Badge Title */}
           <input
             type="text"
             name="badgeTitle"
@@ -113,7 +111,6 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
             className="w-full border px-4 py-2 rounded"
           />
 
-          {/* Star Rating */}
           <select
             name="stars"
             value={form.stars}
@@ -128,7 +125,6 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
             ))}
           </select>
 
-          {/* Category */}
           <select
             name="category"
             value={form.category}
@@ -143,7 +139,6 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
             ))}
           </select>
 
-          {/* Reason */}
           <textarea
             name="reason"
             value={form.reason}
@@ -152,7 +147,6 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
             className="w-full border px-4 py-2 rounded h-28"
           />
 
-          {/* Submit & Reset */}
           <div className="flex justify-between gap-4">
             <button
               type="submit"

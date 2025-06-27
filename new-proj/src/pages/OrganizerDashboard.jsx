@@ -22,7 +22,6 @@ const OrganizerDashboard = () => {
     return <p className="text-center text-gray-500 mt-10">Loading Organizer Dashboard...</p>;
   }
 
-  // Panel rendering based on activeTab
   const renderActivePanel = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -36,13 +35,12 @@ const OrganizerDashboard = () => {
         return <VolunteerActivityPanel organizerId={user._id} />;
       case 'feedback':
         return <FeedbackPanel organizerId={user._id} />;
-        
       case 'badges':
         return <BadgeAssignmentPanel organizerId={user._id} />;
       case 'certificates':
-        return <CertificateGenerator organizerName={user.name} />;
-        case 'profile':
-          return <OrganizerProfile organizerId={user._id} />;
+        return <CertificateGenerator organizerId={user._id} />;
+      case 'profile':
+        return <OrganizerProfile organizerId={user._id} />;
       default:
         return null;
     }
@@ -52,12 +50,9 @@ const OrganizerDashboard = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-indigo-700 mb-6">Welcome, {user.name}</h1>
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Sidebar */}
         <div className="lg:col-span-1">
           <OrganizerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
-
-        {/* Main Content */}
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white shadow rounded-lg p-5">
             {renderActivePanel()}

@@ -1,68 +1,30 @@
-// src/services/eventApi.js
-import API from './api'; // Make sure your base API URL is set correctly
+import API from './api';
 
-/** 
- * ✅ Create a new event by the organizer
- * @param {Object} eventData - All event form data including organizerId
- */
-export const createEvent = (eventData) => {
-  return API.post('/events', eventData);
-};
-
-/** 
- * ✅ Fetch all events (Volunteer dashboard)
- */
-export const fetchAllEvents = () => {
-  return API.get('/events');
-};
-
-/** 
- * ✅ Get a single event by its ID
- * @param {String} id - Event ID
- */
-export const fetchEventById = (id) => {
-  return API.get(`/events/${id}`);
-};
-
-/** 
- * ✅ Volunteer participates in an event
- * @param {String} eventId 
- * @param {String} volunteerId 
- */
-export const participateInEvent = (eventId, volunteerId) => {
-  return API.post(`/events/${eventId}/participate`, { volunteerId });
-};
-
-/** 
- * ✅ Organizer fetches volunteers who joined a specific event
- * @param {String} eventId 
- */
-export const getParticipantsForEvent = (eventId) => {
-  return API.get(`/events/${eventId}/participants`);
-};
-
-
-export const fetchEventsByOrganizer = (organizerId) => {
-  return API.get(`/events?organizerId=${organizerId}`);
-};
-
-// export const markCompleted = (eventId, volunteerId) =>
-//   API.post(`/events/${eventId}/complete`, { volunteerId });
-
-export const markNotInterested = (eventId, volunteerId) => 
+/** Event operations */
+export const createEvent = (eventData) => API.post('/events', eventData);
+export const fetchAllEvents = () => API.get('/events');
+export const fetchEventById = (id) => API.get(`/events/${id}`);
+export const participateInEvent = (eventId, volunteerId) =>
+  API.post(`/events/${eventId}/participate`, { volunteerId });
+export const markEventCompleted = (eventId, volunteerId) =>
+  API.post(`/events/${eventId}/complete`, { volunteerId });
+export const markNotInterested = (eventId, volunteerId) =>
   API.post(`/events/${eventId}/not-interested`, { volunteerId });
-
-export const markEventCompleted = (eventId, volunteerId) => {
-  return API.post(`/events/${eventId}/complete`, { volunteerId });
+export const getParticipantsForEvent = (eventId) =>
+  API.get(`/events/${eventId}/participants`);
+export const fetchEventsByOrganizer = (organizerId) => {
+  return API.get(`/events/by-organizer/${organizerId}`);
 };
 
-export const getVolunteerEventsStats = (volunteerId) => {
-  return API.get(`/events/stats/${volunteerId}`);
+export const getCompletedVolunteersForEvent = (eventId) => {
+  return API.get(`/events/${eventId}/completed-volunteers`);
 };
 
-export const getEventVolunteerActivities = (eventId) => {
-  return API.get(`/events/${eventId}/participants`);
-};
+export const getOrganizerStats = (organizerId) =>
+  API.get(`/events/organizer/${organizerId}`);
+export const getEventVolunteerActivities = (organizerId) =>
+  API.get(`/events/activities/${organizerId}`);
 
-
-
+/** Volunteer stats */
+export const getVolunteerEventsStats = (volunteerId) =>
+  API.get(`/events/stats/${volunteerId}`);
