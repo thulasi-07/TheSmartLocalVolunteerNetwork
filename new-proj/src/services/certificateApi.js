@@ -6,7 +6,7 @@ import API from './api';
  * @param {Object} data - { volunteerId, eventId, organizerId, description }
  */
 export const generateCertificate = (data) => {
-  return API.post('/certificates/generate', data); // ✅ Correct endpoint
+  return API.post('/certificates/generate', data);
 };
 
 /**
@@ -15,4 +15,14 @@ export const generateCertificate = (data) => {
  */
 export const getCertificatesByVolunteer = (volunteerId) => {
   return API.get(`/certificates/volunteer/${volunteerId}`);
+};
+
+/**
+ * ✅ Download certificate as PDF from server (optional if using client-side PDF)
+ * @param {String} certificateId
+ */
+export const downloadCertificatePDF = (certificateId) => {
+  return API.get(`/certificates/download/${certificateId}`, {
+    responseType: 'blob', // Ensure binary file (PDF) is returned correctly
+  });
 };
