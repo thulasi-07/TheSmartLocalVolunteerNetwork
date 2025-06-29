@@ -84,7 +84,7 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
         <p className="text-gray-500">🔄 Loading volunteers...</p>
       ) : volunteers.length === 0 ? (
         <p className="text-red-500 font-medium">
-          🚫 No eligible volunteers found. Please create an event and wait for completions.
+          🚫 No eligible volunteers found. Please wait for their completions.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">

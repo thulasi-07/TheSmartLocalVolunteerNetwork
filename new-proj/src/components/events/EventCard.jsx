@@ -44,6 +44,7 @@ const EventCard = ({ event, userId: propUserId }) => {
       await participateInEvent(event._id, userId);
       setStatus('participated');
       toast.success('You have successfully registered!');
+      window.alert('You have successfully registered!');
     } catch (err) {
       toast.error('Error while participating');
       console.error(err);
