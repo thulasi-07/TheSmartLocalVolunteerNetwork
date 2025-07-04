@@ -53,7 +53,7 @@ const VolunteerDashboard = () => {
       case 'badges':
         return <BadgeView volunteerId={user._id} />;
       case 'certificates':
-        return <CertificateViewer volunteerId={user._id} />; // ✅ Correct component usage
+        return <CertificateViewer volunteerId={user._id} />; 
       case 'profile':
         return <VolunteerProfile volunteerId={user._id} />;
       default:

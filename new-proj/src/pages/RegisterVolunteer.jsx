@@ -72,14 +72,16 @@ const RegisterVolunteer = () => {
         <div>
           <label className="block text-sm font-medium text-gray-700">Password</label>
           <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-            placeholder="Create a password"
-          />
+  type="password"
+  name="password"
+  value={formData.password}
+  onChange={handleChange}
+  required
+  maxLength={10}
+  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+  placeholder="Create a password (max 10 characters)"
+/>
+
         </div>
 
         <div>
