@@ -96,6 +96,7 @@ const feedbackRoutes = require('./routes/feedbackRoutes');
 const badgeRoutes = require('./routes/badgeRoutes');
 const userRoutes = require('./routes/userRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
+const aiRoutes = require("./routes/aiRoutes");
 
 // const badgeRoutes = require('./routes/badgeRoutes');
 // const certificateRoutes = require('./routes/certificateRoutes');
@@ -122,6 +123,7 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/certificates', certificateRoutes);
+app.use("/api/ai", aiRoutes);
 // app.use('/api/badges', badgeRoutes);           
 // app.use('/api/certificates', certificateRoutes); 
 // app.use('/api/feedbacks', feedbackRoutes);
