@@ -34,3 +34,41 @@
 // };
 
 // export default RecommendedEvents;
+
+import React, { useEffect, useState } from 'react';
+import { getRecommendations } from '../services/aiApi';
+
+const RecommendedEvents = ({ volunteerId }) => {
+  const [recommendations, setRecommendations] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getRecommendations(volunteerId);
+        setRecommendations(data);
+      } catch (err) {
+        console.error("Failed to load recommendations");
+      }
+    };
+
+    fetchData();
+  }, [volunteerId]);
+
+  return (
+    <div className="p-4">
+      <h2 className="text-xl font-semibold mb-2">Recommended Events</h2>
+      {recommendations?.recommended_events?.length > 0 ? (
+        <ul className="list-disc pl-6">
+          {recommendations.recommended_events.map((eventId) => (
+            <li key={eventId}>{eventId}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No suitable events found.</p>
+      )}
+    </div>
+  );
+};
+
+export default RecommendedEvents;
+
