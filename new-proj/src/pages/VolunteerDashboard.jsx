@@ -1,11 +1,10 @@
-// src/pages/VolunteerDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import VolunteerSidebar from '../components/volunteer/VolunteerSidebar';
 import VolunteerStats from '../components/volunteer/VolunteerStats';
 import EventCard from '../components/events/EventCard';
 import FeedbackForm from '../components/volunteer/FeedbackForm';
 import BadgeView from '../components/volunteer/BadgeView';
-import CertificateViewer from '../components/volunteer/CertificateView'; // ✅ fixed name
+import CertificateViewer from '../components/volunteer/CertificateView';
 import VolunteerProfile from '../pages/VolunteerProfile';
 import { fetchAllEvents } from '../services/eventApi';
 import { toast } from 'react-toastify';
@@ -53,7 +52,7 @@ const VolunteerDashboard = () => {
       case 'badges':
         return <BadgeView volunteerId={user._id} />;
       case 'certificates':
-        return <CertificateViewer volunteerId={user._id} />; 
+        return <CertificateViewer volunteerId={user._id} />;
       case 'profile':
         return <VolunteerProfile volunteerId={user._id} />;
       default:
@@ -62,15 +61,22 @@ const VolunteerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-3xl font-bold text-indigo-700 mb-6">
-        Welcome, {user?.name || 'Volunteer'}
-      </h1>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-1">
-          <VolunteerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="min-h-screen bg-gray-50 pt-20 pb-16"> {/* assumes navbar height = 5rem, footer = 4rem */}
+      <div className="flex">
+        {/* Sticky Sidebar */}
+        <div className="w-80">
+          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
+            <VolunteerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+          </div>
         </div>
-        <div className="lg:col-span-4 space-y-4">{renderTabContent()}</div>
+
+        {/* Main content */}
+        <div className="flex-1 p-6">
+          <h1 className="text-3xl font-bold text-indigo-700 mb-6">
+            Welcome, {user?.name || 'Volunteer'}
+          </h1>
+          {renderTabContent()}
+        </div>
       </div>
     </div>
   );

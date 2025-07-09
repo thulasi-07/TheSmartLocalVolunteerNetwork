@@ -47,13 +47,20 @@ const OrganizerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-indigo-700 mb-6">Welcome, {user.name}</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-1">
-          <OrganizerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="min-h-screen bg-gray-100 pt-20 pb-16">
+      <div className="flex">
+        {/* Sidebar section */}
+        <div className="w-80">
+          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
+            <OrganizerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+          </div>
         </div>
-        <div className="lg:col-span-4 space-y-6">
+
+        {/* Main content section */}
+        <div className="flex-1 p-6">
+          <h1 className="text-3xl font-bold text-indigo-700 mb-6">
+            Welcome, {user.name}
+          </h1>
           <div className="bg-white shadow rounded-lg p-5">
             {renderActivePanel()}
           </div>

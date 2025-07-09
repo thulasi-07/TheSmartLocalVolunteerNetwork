@@ -1,8 +1,6 @@
-// src/pages/RegisterVolunteer.jsx
-
 import React, { useState } from 'react';
 import axios from '../services/authApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const RegisterVolunteer = () => {
   const [formData, setFormData] = useState({
@@ -43,87 +41,88 @@ const RegisterVolunteer = () => {
         {error && <p className="text-red-600 text-center">{error}</p>}
         {success && <p className="text-green-600 text-center">{success}</p>}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Full Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-            placeholder="Enter your full name"
-          />
-        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:ring-green-500 focus:border-green-500"
+              placeholder="Enter your full name"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-            placeholder="you@example.com"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:ring-green-500 focus:border-green-500"
+              placeholder="you@example.com"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-  type="password"
-  name="password"
-  value={formData.password}
-  onChange={handleChange}
-  required
-  maxLength={10}
-  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-  placeholder="Create a password (max 10 characters)"
-/>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              maxLength={10}
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:ring-green-500 focus:border-green-500"
+              placeholder="Create a password (max 10 characters)"
+            />
+          </div>
 
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Skills</label>
+            <input
+              type="text"
+              name="skills"
+              value={formData.skills}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:ring-green-500 focus:border-green-500"
+              placeholder="e.g. First Aid, Teaching"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Skills</label>
-          <input
-            type="text"
-            name="skills"
-            value={formData.skills}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-            placeholder="e.g. First Aid, Teaching"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:ring-green-500 focus:border-green-500"
+              placeholder="City or region"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Location</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-            placeholder="City or region"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Availability</label>
-          <select
-            name="availability"
-            value={formData.availability}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-          >
-            <option value="">-- Select Availability --</option>
-            <option value="weekdays">Weekdays</option>
-            <option value="weekends">Weekends</option>
-            <option value="anytime">Anytime</option>
-          </select>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Availability</label>
+            <select
+              name="availability"
+              value={formData.availability}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:ring-green-500 focus:border-green-500"
+            >
+              <option value="">-- Select Availability --</option>
+              <option value="weekdays">Weekdays</option>
+              <option value="weekends">Weekends</option>
+              <option value="anytime">Anytime</option>
+            </select>
+          </div>
         </div>
 
         <button
@@ -132,6 +131,14 @@ const RegisterVolunteer = () => {
         >
           Register Volunteer
         </button>
+
+        {/* Already have an account link */}
+        <p className="text-sm text-center text-gray-600">
+          Already have an account?{' '}
+          <Link to="/login" className="text-green-600 hover:underline font-medium">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
