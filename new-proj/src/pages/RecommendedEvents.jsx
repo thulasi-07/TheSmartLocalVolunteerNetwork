@@ -1,74 +1,88 @@
-// import React, { useEffect, useState } from 'react';
-// import { getRecommendedEvents } from '../services/eventApi';
+// src/pages/RecommendedEvents.jsx
 
-// const RecommendedEvents = ({ userId }) => {
-//   const [recommended, setRecommended] = useState([]);
+import React, { useEffect, useState } from "react";
+import { getRecommendedEvents } from "../services/aiApi";
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       const res = await getRecommendedEvents(userId);
-//       setRecommended(res.data);
-//     };
-//     fetchData();
-//   }, [userId]);
-
-//   return (
-//     <div className="p-6 bg-white rounded shadow-md">
-//       <h2 className="text-2xl font-semibold text-indigo-700 mb-4">🔍 Recommended Events</h2>
-//       {recommended.length === 0 ? (
-//         <p>No recommendations at the moment.</p>
-//       ) : (
-//         <ul className="space-y-3">
-//           {recommended.map(event => (
-//             <li key={event._id} className="border p-3 rounded">
-//               <h3 className="text-lg font-bold">{event.title}</h3>
-//               <p className="text-sm text-gray-600">{event.description}</p>
-//               <p className="text-sm text-blue-600">Location: {event.location}</p>
-//               <p className="text-sm text-green-600">Score: {(event.score * 100).toFixed(1)}%</p>
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default RecommendedEvents;
-
-import React, { useEffect, useState } from 'react';
-import { getRecommendations } from '../services/aiApi';
-
-const RecommendedEvents = ({ volunteerId }) => {
-  const [recommendations, setRecommendations] = useState(null);
+const RecommendedEvents = () => {
+  const [recommendation, setRecommendation] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRecommendation = async () => {
+      const input = {
+        volunteer_skill_score: 8.0,
+        volunteer_experience_years: 2,
+        event_difficulty_level: 5,
+        distance_km: 3,
+        availability_hours: 4
+      };
+
       try {
-        const data = await getRecommendations(volunteerId);
-        setRecommendations(data);
-      } catch (err) {
-        console.error("Failed to load recommendations");
+        const result = await getRecommendedEvents(input);
+        setRecommendation(result);
+      } catch (error) {
+        console.error("Failed to fetch AI recommendation:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData();
-  }, [volunteerId]);
+    fetchRecommendation();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-6 text-center text-gray-600">Loading recommendations...</div>
+    );
+  }
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-2">Recommended Events</h2>
-      {recommendations?.recommended_events?.length > 0 ? (
-        <ul className="list-disc pl-6">
-          {recommendations.recommended_events.map((eventId) => (
-            <li key={eventId}>{eventId}</li>
-          ))}
-        </ul>
+    <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-lg space-y-6">
+      <h2 className="text-3xl font-bold text-indigo-700 text-center">
+        🎯 Personalized Event Recommendations
+      </h2>
+
+      {recommendation?.match ? (
+        <div className="space-y-4">
+          <p className="text-green-700 font-medium text-center">
+            ✅ AI matched events based on your profile
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {recommendation.recommendedEvents.map((eventId, idx) => (
+              <div
+                key={idx}
+                className="p-4 bg-green-100 border border-green-300 rounded-lg shadow-sm"
+              >
+                <h3 className="text-lg font-semibold text-green-800">
+                  📌 Event Code: {eventId}
+                </h3>
+                <p className="text-sm text-green-700">
+                  This event matches your skill level, experience, and availability.
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
-        <p>No suitable events found.</p>
+        <div className="text-center text-red-500 font-semibold">
+          ❌ No suitable events found for your current profile.
+        </div>
       )}
+
+      <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600 border border-gray-200">
+        <p className="font-semibold text-gray-700 mb-2">📥 Model Input:</p>
+        <pre className="bg-white p-3 rounded text-gray-800 overflow-x-auto">
+          {JSON.stringify(recommendation.input || {}, null, 2)}
+        </pre>
+
+        <p className="font-semibold text-gray-700 mt-4 mb-2">📤 Model Output:</p>
+        <pre className="bg-white p-3 rounded text-gray-800 overflow-x-auto">
+          {JSON.stringify(recommendation, null, 2)}
+        </pre>
+      </div>
     </div>
   );
 };
 
 export default RecommendedEvents;
-

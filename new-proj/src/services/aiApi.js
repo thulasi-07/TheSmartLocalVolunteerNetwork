@@ -1,14 +1,8 @@
-// services/aiApi.js
-import axios from 'axios';
+// src/services/aiApi.js
 
-const API_URL = 'http://localhost:5000/api/ai';  // Update if using proxy or deployed
+import axios from "axios";
 
-export const getRecommendations = async (volunteerId) => {
-  try {
-    const res = await axios.get(`${API_URL}/recommend/${volunteerId}`);
-    return res.data;
-  } catch (err) {
-    console.error("AI API error:", err);
-    throw err;
-  }
+export const getRecommendedEvents = async (input) => {
+  const res = await axios.post("http://localhost:5000/api/ai/recommend", input);
+  return res.data;
 };

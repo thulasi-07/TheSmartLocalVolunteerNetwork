@@ -17,10 +17,15 @@ const VolunteerSidebar = ({ activeTab, setActiveTab }) => {
     navigate('/');
   };
 
+  const goToAIPage = () => {
+    navigate('/ai-recommendations');
+  };
+
   return (
     <aside className="h-full w-full bg-white shadow-lg p-6 space-y-5 overflow-y-auto">
       <h2 className="text-2xl font-bold text-indigo-700 border-b pb-3">Volunteer Menu</h2>
 
+      {/* Internal Tabs */}
       {tabs.map((tab) => (
         <button
           key={tab.key}
@@ -36,7 +41,15 @@ const VolunteerSidebar = ({ activeTab, setActiveTab }) => {
         </button>
       ))}
 
-      {/* Logout Button - same look as other tabs */}
+      {/* AI Recommendation Button */}
+      <button
+        onClick={goToAIPage}
+        className="w-full text-left px-5 py-3 rounded-lg text-base font-semibold text-gray-700 hover:bg-indigo-100 transition"
+      >
+        🤖 AI Recommendations
+      </button>
+
+      {/* Logout */}
       <button
         onClick={handleLogout}
         className="w-full text-left px-5 py-3 rounded-lg text-base font-semibold text-gray-700 hover:bg-indigo-100 transition"
