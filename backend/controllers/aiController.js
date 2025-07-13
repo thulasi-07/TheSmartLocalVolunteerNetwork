@@ -1,22 +1,22 @@
-// controllers/aiController.js
-const { exec } = require("child_process");
-const path = require("path");
+// backend/controllers/aiController.js
 
-exports.getRecommendations = (req, res) => {
-  const volunteerId = req.params.id;
+const { recommend_events } = require("../ai/recommender");
 
-  const scriptPath = path.join(__dirname, "..", "ai", "recommend.py");
+exports.getAIRecommendation = async (req, res) => {
+  try {
+    const input = req.body; // Get input from frontend
+    const result = recommend_events(input); // Call your Python-trained model
 
-  exec(`python ${scriptPath} ${volunteerId}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error("Error:", error);
-      return res.status(500).json({ error: "AI model execution failed" });
-    }
-    try {
-      const data = JSON.parse(stdout);
-      res.json(data);
-    } catch (err) {
-      res.status(500).json({ error: "Failed to parse AI output" });
-    }
-  });
+    // Add input to the result so it can be shown in the UI
+    res.json({
+      input: input,               // 👈 Include input in the response
+      ...result                   // 👈 Spread the model result (match, recommendedEvents)
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "AI Recommendation failed",
+      error: error.message
+    });
+  }
 };
