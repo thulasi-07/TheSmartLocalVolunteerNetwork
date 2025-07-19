@@ -48,26 +48,32 @@ const BadgeAssignmentPanel = ({ organizerId }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { volunteerId, badgeTitle, stars, category, reason } = form;
+  e.preventDefault();
+  const { volunteerId, badgeTitle, stars, category, reason } = form;
 
-    if (!volunteerId || !badgeTitle || !stars || !category || !reason) {
-      return toast.error('⚠️ Please fill in all fields');
-    }
+  if (!volunteerId || !badgeTitle || !stars || !category || !reason) {
+    return toast.error('⚠️ Please fill in all fields');
+  }
 
-    setSubmitting(true);
-    try {
-      await axios.post('/badges/assign', { ...form, organizerId });
-      toast.success('✅ Badge assigned successfully!');
-      alert('🎉 Badge/Star has been successfully assigned to the volunteer!');
-      handleReset();
-    } catch (err) {
-      console.error(err);
+  setSubmitting(true);
+  try {
+    await axios.post('/badges/assign', { ...form, organizerId });
+    toast.success('✅ Badge assigned successfully!');
+    alert('🎉 Badge/Star has been successfully assigned to the volunteer!');
+    handleReset();
+  } catch (err) {
+    if (err.response && err.response.status === 400 && err.response.data.error?.includes('already')) {
+      toast.warning('⚠️ You have already assigned a badge to this volunteer.');
+      alert('⚠️ You have already assigned a badge to this volunteer.');
+    } else {
       toast.error('❌ Failed to assign badge');
-    } finally {
-      setSubmitting(false);
     }
-  };
+    console.error(err);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   const handleReset = () => {
     setForm({ volunteerId: '', badgeTitle: '', stars: '', category: '', reason: '' });

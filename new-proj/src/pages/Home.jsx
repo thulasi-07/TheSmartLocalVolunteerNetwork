@@ -10,25 +10,17 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home-bg min-h-screen flex items-center justify-center px-4">
-      <div
-        className={`transition-all duration-1000 text-center max-w-4xl ${
-          show ? 'fade-in' : 'fade-out'
-        }`}
-      >
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-xl leading-tight mb-6">
+    <div className="home-bg">
+      <div className={`text-center max-w-3xl w-full ${show ? 'fade-in' : 'fade-out'}`}>
+        <h1 className="heading">
           Welcome to <br />
-          The Smart Local Volunteer Network 🌍
+          The Smart Local Volunteer Network <span className="sparkle">🌼</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-gray-100 font-medium drop-shadow-sm mb-8">
+        <p className="subtext">
           Discover, connect, and contribute to impactful local initiatives.<br />
-          Be the reason someone smiles today ✨
+          Be the reason someone smiles today 
         </p>
-
-        {/* <button className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-blue-100 transition-all duration-300">
-          Get Started
-        </button> */}
       </div>
     </div>
   );

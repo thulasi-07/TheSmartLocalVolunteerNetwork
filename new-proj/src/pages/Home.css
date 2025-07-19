@@ -1,28 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Quicksand:wght@500&display=swap');
+
 .home-bg {
-  background: linear-gradient(270deg, #3a0ca3, #4361ee, #4cc9f0, #5f0f40);
-  background-size: 800% 800%;
-  animation: gradientShift 15s ease infinite;
+  background: linear-gradient(135deg, #b8c6db, #f5f7fa, #c2e9fb, #e0c3fc);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease infinite;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .fade-in {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 1s ease, transform 1s ease;
+  transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
 .fade-out {
   opacity: 0;
+  transform: translateY(30px);
+}
+
+.heading {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #222;
+  text-shadow: 1px 1px 2px #aaa;
+  margin-bottom: 1.5rem;
+  animation: floatText 4s ease-in-out infinite;
+}
+
+@keyframes floatText {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.subtext {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.2rem;
+  color: #444;
+  text-shadow: 1px 1px 2px #ccc;
+  line-height: 1.6;
+  animation: fadeInUp 2.5s ease forwards;
+  opacity: 0;
   transform: translateY(20px);
+  animation-delay: 1.2s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sparkle {
+  color: #ffb703;
+  animation: sparkle 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes sparkle {
+  from { filter: drop-shadow(0 0 3px #ffb703); }
+  to { filter: drop-shadow(0 0 10px #ffd166); }
 }

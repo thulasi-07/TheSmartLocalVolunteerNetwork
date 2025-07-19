@@ -40,27 +40,38 @@ const CertificateGenerator = ({ organizerId }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { volunteerId, eventId, description } = form;
-    if (!volunteerId || !eventId || !description.trim()) {
-      return toast.warn("⚠️ Please fill all fields");
-    }
+  e.preventDefault();
+  const { volunteerId, eventId, description } = form;
+  if (!volunteerId || !eventId || !description.trim()) {
+    return toast.warn("⚠️ Please fill all fields");
+  }
 
-    try {
-      await axios.post('/certificates/generate', {
-        volunteerId,
-        eventId,
-        organizerId,
-        description
-      });
-      toast.success("🎓 Certificate generated");
-      window.alert("🎉 Certificate successfully generated!");
-      setForm({ eventId: '', volunteerId: '', description: '' });
-      setVolunteers([]);
-    } catch (err) {
+  try {
+    await axios.post('/certificates/generate', {
+      volunteerId,
+      eventId,
+      organizerId,
+      description
+    });
+    toast.success("🎓 Certificate generated");
+    window.alert("🎉 Certificate successfully generated!");
+    setForm({ eventId: '', volunteerId: '', description: '' });
+    setVolunteers([]);
+  } catch (err) {
+    if (
+      err.response &&
+      err.response.status === 400 &&
+      err.response.data?.error?.includes('already')
+    ) {
+      toast.warning("⚠️ Certificate already exists for this volunteer and event.");
+      window.alert("⚠️ You have already generated a certificate for this volunteer.");
+    } else {
       toast.error("❌ Failed to generate certificate");
+      console.error(err);
     }
-  };
+  }
+};
+
 
   return (
     <div className="bg-white p-6 rounded shadow-md max-w-xl mx-auto">
