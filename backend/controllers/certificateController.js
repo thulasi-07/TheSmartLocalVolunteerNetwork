@@ -8,10 +8,20 @@ exports.generateCertificateForVolunteer = async (req, res) => {
   try {
     const { volunteerId, eventId, organizerId, description } = req.body;
 
+    // ✅ Check if a certificate already exists for this volunteer and event
+    const existingCert = await Certificate.findOne({ volunteerId, eventId });
+    if (existingCert) {
+      return res.status(400).json({
+        error: 'Certificate already generated for this volunteer and event.',
+        existingCert,
+      });
+    }
+
+    // Proceed if no certificate exists
     const [event, volunteer, organizer] = await Promise.all([
       Event.findById(eventId),
       User.findById(volunteerId),
-      User.findById(organizerId)
+      User.findById(organizerId),
     ]);
 
     if (!event || !volunteer || !organizer) {
@@ -25,7 +35,7 @@ exports.generateCertificateForVolunteer = async (req, res) => {
       eventTitle: event.title,
       volunteerName: volunteer.name,
       organizerName: organizer.name,
-      description
+      description,
     });
 
     await cert.save();
@@ -36,6 +46,7 @@ exports.generateCertificateForVolunteer = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Get all certificates for a volunteer
 // CertificateController.js
