@@ -61,22 +61,18 @@ const VolunteerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-16"> {/* assumes navbar height = 5rem, footer = 4rem */}
-      <div className="flex">
-        {/* Sticky Sidebar */}
-        <div className="w-80">
-          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
-            <VolunteerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
-        </div>
+    <div className="w-full h-screen flex bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-72 h-full sticky top-0 shadow-md bg-white border-r border-gray-200">
+        <VolunteerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
 
-        {/* Main content */}
-        <div className="flex-1 p-6">
-          <h1 className="text-3xl font-bold text-indigo-700 mb-6">
-            Welcome, {user?.name || 'Volunteer'}
-          </h1>
-          {renderTabContent()}
-        </div>
+      {/* Main Content */}
+      <div className="flex-1 p-6 overflow-y-auto">
+        <h1 className="text-3xl font-bold text-indigo-700 mb-6">
+          Welcome, {user?.name || 'Volunteer'}
+        </h1>
+        {renderTabContent()}
       </div>
     </div>
   );

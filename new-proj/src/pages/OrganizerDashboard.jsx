@@ -1,4 +1,3 @@
-// src/pages/OrganizerDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import OrganizerStats from '../components/dashboard/OrganizerStats';
 import EventForm from '../components/events/EventForm';
@@ -7,7 +6,7 @@ import FeedbackPanel from '../components/organizer/FeedbackPanel';
 import BadgeAssignmentPanel from '../components/organizer/BadgeAssignmentPanel';
 import CertificateGenerator from '../components/organizer/CertificateGenerator';
 import OrganizerSidebar from '../components/organizer/OrganizerSidebar';
-import OrganizerProfile from '../pages/OrganizerProfile';
+import OrganizerProfile from './OrganizerProfile';
 
 const OrganizerDashboard = () => {
   const [user, setUser] = useState(null);
@@ -47,21 +46,19 @@ const OrganizerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-20 pb-16">
-      <div className="flex">
-        {/* Sidebar section */}
-        <div className="w-80">
-          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
-            <OrganizerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
+    <div className="h-screen w-screen bg-gradient-to-br from-indigo-100 to-purple-100">
+      <div className="flex h-screen overflow-hidden">
+        {/* Sidebar section (fixed height, no scroll) */}
+        <div className="w-80 bg-white shadow-lg border-r border-gray-200 h-full overflow-hidden">
+          <OrganizerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
-        {/* Main content section */}
-        <div className="flex-1 p-6">
-          <h1 className="text-3xl font-bold text-indigo-700 mb-6">
+        {/* Main content section (scrollable) */}
+        <div className="flex-1 h-full overflow-y-auto p-10">
+          <h1 className="text-4xl font-semibold text-indigo-700 mb-6">
             Welcome, {user.name}
           </h1>
-          <div className="bg-white shadow rounded-lg p-5">
+          <div className="bg-white shadow-md rounded-2xl p-6">
             {renderActivePanel()}
           </div>
         </div>
