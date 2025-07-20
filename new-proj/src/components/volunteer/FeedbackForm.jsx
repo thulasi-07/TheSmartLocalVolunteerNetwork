@@ -24,16 +24,34 @@ const FeedbackForm = ({ volunteerId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!eventId || !message) return toast.error('Please fill in all fields');
+
+    if (!volunteerId || !eventId || !message) {
+      toast.error('All fields are required');
+      return;
+    }
 
     try {
-      await axios.post('/feedback', { volunteerId, eventId, message });
-      toast.success('Feedback submitted!');
-      window.alert('Thank you for your feedback!');
-      setEventId('');
-      setMessage('');
+      const payload = {
+        volunteerId: volunteerId,
+        eventId: eventId,
+        message: message,
+      };
+
+      const response = await axios.post('/feedback', payload);
+
+      if (response.status === 201 || response.status === 200) {
+        toast.success('Feedback submitted!');
+        window.alert('Thank you for your feedback!');
+        setEventId('');
+        setMessage('');
+      }
     } catch (err) {
-      toast.error('Failed to submit feedback');
+      const msg = err?.response?.data?.message || 'Failed to submit feedback';
+      if (msg.includes('already submitted')) {
+        window.alert('You have already submitted feedback for this event.');
+      } else {
+        toast.error(msg);
+      }
     }
   };
 
