@@ -4,17 +4,33 @@ const Event = require('../models/Event');
 const User = require('../models/User');
 
 // ✅ Save feedback
+// ✅ Save feedback - updated with duplicate check
 exports.submitFeedback = async (req, res) => {
   try {
     const { volunteerId, eventId, message } = req.body;
 
-    const event = await Event.findById(eventId);
-    const volunteer = await User.findById(volunteerId);
+    // Validate input
+    if (!volunteerId || !eventId || !message) {
+      return res.status(400).json({ message: 'volunteerId, eventId, and message are required.' });
+    }
+
+    // Check if event and volunteer exist
+    const [event, volunteer] = await Promise.all([
+      Event.findById(eventId),
+      User.findById(volunteerId)
+    ]);
 
     if (!event || !volunteer) {
       return res.status(404).json({ message: 'Event or volunteer not found' });
     }
 
+    // Check if feedback already exists
+    const existingFeedback = await Feedback.findOne({ volunteerId, eventId });
+    if (existingFeedback) {
+      return res.status(400).json({ message: 'You have already submitted feedback for this event.' });
+    }
+
+    // Create and save new feedback
     const newFeedback = new Feedback({
       volunteerId,
       eventId,
@@ -23,9 +39,11 @@ exports.submitFeedback = async (req, res) => {
     });
 
     await newFeedback.save();
-    res.status(201).json({ message: 'Feedback submitted successfully' });
+
+    return res.status(201).json({ message: 'Feedback submitted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Error submitting feedback', error: err.message });
+    console.error('Feedback submission error:', err);
+    return res.status(500).json({ message: 'Error submitting feedback', error: err.message });
   }
 };
 
